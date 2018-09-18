@@ -5,19 +5,20 @@ var debug=false;
 var spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
 
 //create a new seed
-function sendUrl(data){
+function commitUrl(data,callback){
 	var url = spi + "seeds";
-	postData(url, data);
+	postData(url, data,callback);
 }
 
 //create a new item
-function sendItem(data){
+function commitData(data,callback){
 	var url = spi + "items";
-	postData(url, data);
+	postData(url, data,callback);
 }
 
 //this is a private method
-function postData(url,data){
+//TODO: create a new one or update for an exist item
+function postData(url,data,callback){
     var req = new XMLHttpRequest();
     req.open('POST', url, true);
     req.setRequestHeader('Content-Type', 'application/json');
@@ -30,7 +31,9 @@ function postData(url,data){
             } else {
                 // Handle error case
             }
-            //TODO here can put call back
+            if(callback && typeof callback == 'function'){
+                callback();
+            }
         }
     };
     data._key = hex_md5(data.url);
