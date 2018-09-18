@@ -19,6 +19,7 @@ function commitData(data,callback){
 //this is a private method
 //TODO: create a new one or update for an exist item
 function postData(url,data,callback){
+    console.log("commit to "+url,data);
     var req = new XMLHttpRequest();
     req.open('POST', url, true);
     req.setRequestHeader('Content-Type', 'application/json');
