@@ -1,5 +1,5 @@
 //debug 
-var debug=false;
+var debug=true;
 
 //data api
 var spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
@@ -42,12 +42,11 @@ function __postData(collection,data,callback){
             if (req.status >= 200 && req.status < 400) {//got result
                 var result = JSON.parse(req.responseText);
                 if(debug)console.log(result);
-                if(result.length>0){
+                if(result.count>0){
                     __update(spi+collection+"/"+_key,data,callback);
                 }else{
                     __create(spi+collection,data,callback);
                 }
-                
             } else {//query error
                 if(debug)console.log(JSON.parse(req.responseText));
             }
