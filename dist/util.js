@@ -25,6 +25,13 @@ function commitData(data,callback){
     __postData("items", data,callback);
 }
 
+//get full url
+function fullUrl(url) {
+    var a = document.createElement('a');
+    a.href = url;
+    return a.href;
+}
+
 //pivate method
 //check data and dispatch to create or update
 function __postData(collection,data,callback){
