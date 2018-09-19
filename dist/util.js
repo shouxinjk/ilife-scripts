@@ -41,12 +41,8 @@ function __postData(collection,data,callback){
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {//got result
                 var result = JSON.parse(req.responseText);
-                if(debug)console.log(result);
-                if(result.count>0){
-                    __update(spi+collection+"/"+_key,data,callback);
-                }else{
-                    __create(spi+collection,data,callback);
-                }
+                if(debug)console.log(result,result.count);
+                result.count === 0 ? __create(spi+collection,data,callback) : __update(spi+collection+"/"+_key,data,callback);
             } else {//query error
                 if(debug)console.log(JSON.parse(req.responseText));
             }
