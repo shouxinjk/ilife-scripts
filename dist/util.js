@@ -1,5 +1,5 @@
 //debug 
-var debug=true;
+var debug=false;
 
 //data api
 var spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
@@ -21,7 +21,7 @@ function commitData(data,callback){
 //pivate method
 //check data and dispatch to create or update
 function __postData(url,data,callback){
-    console.log("check if data exists.[spi]"+url,"[data.url]"+data.url);
+    if(debug)console.log("check if data exists.[spi]"+url,"[data.url]"+data.url);
     var _key = hex_md5(data.url);
     var req = new XMLHttpRequest();
     req.open('GET', url+"/"+_key, true);//query to check if exists
@@ -49,7 +49,7 @@ function __postData(url,data,callback){
 //private method
 //create a new document
 function __create(url,data,callback){
-    console.log("create new document against "+url,data);
+    if(debug)console.log("create new document against "+url,data);
     var req = new XMLHttpRequest();
     req.open('POST', url, true);
     req.setRequestHeader('Content-Type', 'application/json');
@@ -78,7 +78,7 @@ function __create(url,data,callback){
 //private method
 //update an exist document
 function __update(url,data,callback){
-    console.log("update exist document against "+url,data);
+    if(debug)console.log("update exist document against "+url,data);
     var req = new XMLHttpRequest();
     req.open('PATCH', url, true);
     req.setRequestHeader('Content-Type', 'application/json');
