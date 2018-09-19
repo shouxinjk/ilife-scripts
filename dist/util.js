@@ -1,5 +1,5 @@
 //debug 
-var debug=true;
+var debug=false;
 
 //data api
 var spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
@@ -17,20 +17,12 @@ var auth = 'Basic aWxpZmU6aWxpZmU=';
 
 //create a new seed
 function commitUrl(data,callback){
-    try{
-        __postData("seeds", data,callback);
-    }catch(e){
-        if(debug)console.log("commit url error.",e);
-    }
+     __postData("seeds", data,callback);
 }
 
 //create a new item
 function commitData(data,callback){
-    try{
-        __postData("items", data,callback);
-    }catch(e){
-        if(debug)console.log("commit item error.",e);
-    }
+    __postData("items", data,callback);
 }
 
 //pivate method
@@ -47,7 +39,7 @@ function __postData(collection,data,callback){
     req.setRequestHeader('Api-Key', 'foobar');
     req.onreadystatechange = function() {
         if (req.readyState === 4) {
-            if (req.status >= 200 && req.status < 400) {//yes the item exists
+            if (req.status >= 200 && req.status < 400) {//got result
                 var result = JSON.parse(req.responseText);
                 if(debug)console.log(result);
                 if(result.length>0){
