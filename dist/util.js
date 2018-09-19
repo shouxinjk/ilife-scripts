@@ -1,5 +1,5 @@
 //debug 
-var debug=true;
+var debug=false;
 
 //data api
 var spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
