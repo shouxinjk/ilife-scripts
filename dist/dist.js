@@ -1,5 +1,5 @@
 //debug 
-var debug=false;
+var debug=true;
 
 //data api
 var spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
@@ -27,7 +27,7 @@ function postData(url,data,callback){
     req.onreadystatechange = function() {
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {//yes the item exists
-                if(debug)console.log(JSON.parse(req.responseText));
+                console.log(JSON.parse(req.responseText));
                 update(url+"/"+_key,data,callback);
             } else {//no the item does not exist
                 create(url,data,callback);
