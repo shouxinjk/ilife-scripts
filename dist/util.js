@@ -17,18 +17,26 @@ var auth = 'Basic aWxpZmU6aWxpZmU=';
 
 //create a new seed
 function commitUrl(data,callback){
-	__postData("seeds", data,callback);
+    try{
+        __postData("seeds", data,callback);
+    }catch(e){
+        if(debug)console.log("commit url error.",e);
+    }
 }
 
 //create a new item
 function commitData(data,callback){
-	__postData("items", data,callback);
+    try{
+        __postData("items", data,callback);
+    }catch(e){
+        if(debug)console.log("commit item error.",e);
+    }
 }
 
 //pivate method
 //check data and dispatch to create or update
 function __postData(collection,data,callback){
-    if(debug)console.log("check if data exists.[spi]"+spi+"/"+collection,"[data.url]"+data.url);
+    if(debug)console.log("check if data exists.[spi.url]"+spi+collection,"[data.url]"+data.url);
     var _key = hex_md5(data.url);
     var req = new XMLHttpRequest();
     query.collection = collection;
@@ -43,9 +51,9 @@ function __postData(collection,data,callback){
                 var result = JSON.parse(req.responseText);
                 if(debug)console.log(result);
                 if(result.length>0){
-                    __update(spi+"/"+collection+"/"+_key,data,callback);
+                    __update(spi+collection+"/"+_key,data,callback);
                 }else{
-                    __create(spi+"/"+collection,data,callback);
+                    __create(spi+collection,data,callback);
                 }
                 
             } else {//query error
