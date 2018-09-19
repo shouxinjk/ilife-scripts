@@ -30,11 +30,16 @@ function postData(url,data,callback){
                 console.log(JSON.parse(req.responseText));
                 update(url+"/"+_key,data,callback);
             } else {//no the item does not exist
+                console.log(JSON.parse(req.responseText));
                 create(url,data,callback);
             }
         }
     };
-    
+    try{
+        req.send(JSON.stringify(data));//post data
+    }catch(e){
+        if(debug)console.log("Error while checking data if exists."+e);
+    }
 }
 
 //this is a private method
@@ -49,7 +54,7 @@ function create(url,data,callback){
     req.onreadystatechange = function() {
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {
-                if(debug)console.log(JSON.parse(req.responseText));
+                console.log(JSON.parse(req.responseText));
             } else {
                 // Handle error case
             }
@@ -76,7 +81,7 @@ function update(url,data,callback){
     req.onreadystatechange = function() {
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {
-                if(debug)console.log(JSON.parse(req.responseText));
+                console.log(JSON.parse(req.responseText));
             } else {
                 // Handle error case
             }
