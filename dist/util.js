@@ -28,7 +28,7 @@ function commitData(data,callback){
 //pivate method
 //check data and dispatch to create or update
 function __postData(collection,data,callback){
-    if(debug)console.log("check if data exists.[spi]"+url,"[data.url]"+data.url);
+    if(debug)console.log("check if data exists.[spi]"+spi+"/"+collection,"[data.url]"+data.url);
     var _key = hex_md5(data.url);
     var req = new XMLHttpRequest();
     query.collection = collection;
