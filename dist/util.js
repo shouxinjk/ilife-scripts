@@ -6,7 +6,7 @@ var spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
 var spi_query = 'https://data.shouxinjk.net/_db/sea/_api/simple/by-example';
 var query=
     {
-        collection: "items", 
+        collection: "my_stuff", 
         example: { 
             _key :null
         } 
@@ -22,7 +22,7 @@ function commitUrl(data,callback){
 
 //create a new item
 function commitData(data,callback){
-    __postData("items", data,callback);
+    __postData("my_stuff", data,callback);
 }
 
 //get full url
