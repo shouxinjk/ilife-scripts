@@ -118,3 +118,38 @@ function __update(url,data,callback){
         if(debug)console.log("Error while update data to create new document."+e);
     }
 }
+
+function queryData(query,callback){
+    __ajax(spi_query,query,"PUT",callback);
+}
+
+function querySeeds(){
+
+}
+
+//private method
+//generl method
+function __ajax(url,data,method="GET",callback){
+    if(debug)console.log("AJAX "+url,data,method);
+    var req = new XMLHttpRequest();
+    req.open(method, url, true);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.setRequestHeader('Authorization', auth);
+    req.setRequestHeader('Api-Key', 'foobar');
+    req.onreadystatechange = function() {
+        if (req.readyState === 4) {
+            if (req.status >= 200 && req.status < 400) {
+                if(callback && typeof callback == 'function'){
+                    callback(JSON.parse(req.responseText));
+                }
+            } else {
+                // Handle error case
+            }
+        }
+    };
+    try{
+        req.send(JSON.stringify(data));//post data
+    }catch(e){
+        if(debug)console.log("AJAX error."+e);
+    }
+}
