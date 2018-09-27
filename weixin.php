@@ -8,10 +8,10 @@ define("TOKEN", "qchzhu");
 $wechatObj = new wechatCallbackapiTest();
 
 //for token validation
-$wechatObj->valid();
+//$wechatObj->valid();
 
 //for auto-responding
-//$wechatObj->responseMsg();
+$wechatObj->responseMsg();
 
 class wechatCallbackapiTest
 {
