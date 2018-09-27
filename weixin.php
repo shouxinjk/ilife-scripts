@@ -11,7 +11,7 @@ $wechatObj = new wechatCallbackapiTest();
 $wechatObj->valid();
 
 //for auto-responding
-$wechatObj->responseMsg();
+//$wechatObj->responseMsg();
 
 class wechatCallbackapiTest
 {
