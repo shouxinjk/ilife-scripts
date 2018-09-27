@@ -112,7 +112,7 @@ class wechatCallbackapiTest
 									$tag = $object->tags[$k];
 									$tagstr = $tagstr." ".$tag;
 								}
-								$title = $object->title." ".$object->distributor->name.$tagstr; // title is a field of your content type
+								$title = $object->title.$tagstr; // title is a field of your content type
 								$decription = $object->summary;
 								$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
 								$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
