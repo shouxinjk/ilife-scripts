@@ -107,10 +107,15 @@ class wechatCallbackapiTest
 								if($itemCount>4)//we only display 4 items for mobile
 									break;
 								$object = $array[$i]; // The array could contain multiple instances of your content type
-								$title = $object->title; // title is a field of your content type
+								$tagstr="";
+								for($k=0;$k<count($object->tags);$k++){
+									$tag = $object->tags[$k];
+									$tagstr = $tagstr." ".$tag;
+								}
+								$title = $object->title." ".$object->distributor->name.$tagstr; // title is a field of your content type
 								$decription = $object->summary;
 								$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
-								$linkUrl = "http://www.shouxinjk.net/list/go.html?id=".$object->_key;
+								$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
 								$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
 								$itemList = $itemList.$itemStr;
 								$itemCount ++;
