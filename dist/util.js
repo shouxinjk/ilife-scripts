@@ -144,7 +144,7 @@ function _querySeeds(query,callback){
 function _next(){
     _querySeeds(_query_seed,function(result){
         if(result.count>0){
-            window.location.href = result[0].url;
+            window.location.href = result.result[0].url;
         }else{
             if(debug)console.log("no more pending url:s");
         }
