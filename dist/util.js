@@ -1,10 +1,10 @@
-//debug 
-var debug=false;
+//_debug 
+var _debug=false;
 
 //data api
-var spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
-var spi_query = 'https://data.shouxinjk.net/_db/sea/_api/simple/by-example';
-var query=
+var _spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
+var _spi_query = 'https://data.shouxinjk.net/_db/sea/_api/simple/by-example';
+var _query=
     {
         collection: "my_stuff", 
         example: { 
@@ -12,8 +12,17 @@ var query=
         } 
     };
 
+var _query_seed=
+    {
+        collection: "my_stuff", //TODO：需要调整为seeds用于执行采集
+        limit:1
+    };
+
 //auth
-var auth = 'Basic aWxpZmU6aWxpZmU=';
+var _auth = 'Basic aWxpZmU6aWxpZmU=';
+
+//pending urls
+var _seeds=[];
 
 //create a new seed
 function commitUrl(data,callback){
@@ -35,46 +44,46 @@ function fullUrl(url) {
 //pivate method
 //check data and dispatch to create or update
 function __postData(collection,data,callback){
-    if(debug)console.log("check if data exists.[spi.url]"+spi+collection,"[data.url]"+data.url);
+    if(_debug)console.log("check if data exists.[spi.url]"+_spi+collection,"[data.url]"+data.url);
     var _key = hex_md5(data.url);
     var req = new XMLHttpRequest();
-    query.collection = collection;
-    query.example._key = _key;
-    req.open('PUT', spi_query, true);//query to check if exists
+    _query.collection = collection;
+    _query.example._key = _key;
+    req.open('PUT', _spi_query, true);//query to check if exists
     req.setRequestHeader('Content-Type', 'application/json');
-    req.setRequestHeader('Authorization', auth);
+    req.setRequestHeader('Authorization', _auth);
     req.setRequestHeader('Api-Key', 'foobar');
     req.onreadystatechange = function() {
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {//got result
                 var result = JSON.parse(req.responseText);
-                if(debug)console.log(result,result.count);
-                result.count === 0 ? __create(spi+collection,data,callback) : __update(spi+collection+"/"+_key,data,callback);
+                if(_debug)console.log(result,result.count);
+                result.count === 0 ? __create(_spi+collection,data,callback) : __update(_spi+collection+"/"+_key,data,callback);
             } else {//query error
-                if(debug)console.log(JSON.parse(req.responseText));
+                if(_debug)console.log(JSON.parse(req.responseText));
             }
         }
     };
     try{
-        req.send(JSON.stringify(query));//put query
+        req.send(JSON.stringify(_query));//put query
     }catch(e){
-        if(debug)console.log("Error while checking data if exists."+e);
+        if(_debug)console.log("Error while checking data if exists."+e);
     }
 }
 
 //private method
 //create a new document
 function __create(url,data,callback){
-    if(debug)console.log("create new document against "+url,data);
+    if(_debug)console.log("create new document against "+url,data);
     var req = new XMLHttpRequest();
     req.open('POST', url, true);
     req.setRequestHeader('Content-Type', 'application/json');
-    req.setRequestHeader('Authorization', auth);
+    req.setRequestHeader('Authorization', _auth);
     req.setRequestHeader('Api-Key', 'foobar');
     req.onreadystatechange = function() {
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {
-                if(debug)console.log(JSON.parse(req.responseText));
+                if(_debug)console.log(JSON.parse(req.responseText));
             } else {
                 // Handle error case
             }
@@ -87,23 +96,23 @@ function __create(url,data,callback){
     try{
         req.send(JSON.stringify(data));//post data
     }catch(e){
-        if(debug)console.log("Error while update data to create new document."+e);
+        if(_debug)console.log("Error while update data to create new document."+e);
     }
 }
 
 //private method
 //update an exist document
 function __update(url,data,callback){
-    if(debug)console.log("update exist document against "+url,data);
+    if(_debug)console.log("update exist document against "+url,data);
     var req = new XMLHttpRequest();
     req.open('PATCH', url, true);
     req.setRequestHeader('Content-Type', 'application/json');
-    req.setRequestHeader('Authorization', auth);
+    req.setRequestHeader('Authorization', _auth);
     req.setRequestHeader('Api-Key', 'foobar');
     req.onreadystatechange = function() {
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {
-                if(debug)console.log(JSON.parse(req.responseText));
+                if(_debug)console.log(JSON.parse(req.responseText));
             } else {
                 // Handle error case
             }
@@ -115,26 +124,38 @@ function __update(url,data,callback){
     try{
         req.send(JSON.stringify(data));//post data
     }catch(e){
-        if(debug)console.log("Error while update data to create new document."+e);
+        if(_debug)console.log("Error while update data to create new document."+e);
     }
 }
 
 function queryData(query,callback){
-    __ajax(spi_query,query,"PUT",callback);
+    __ajax(_spi_query,query,"PUT",callback);
 }
 
-function querySeeds(){
+//每次获取1条seed
+function _querySeeds(query,callback){
+    __ajax(_spi_query,query,"PUT",callback);
+}
 
+//自动查询后跳转到下一个地址
+function _next(){
+    _querySeeds(q,function(result){
+        if(result.count>0){
+            window.location.href = result[0].url;
+        }else{
+            if(debug)console.log("no more pending url:s");
+        }
+    });
 }
 
 //private method
 //generl method
 function __ajax(url,data,method="GET",callback){
-    if(debug)console.log("AJAX "+url,data,method);
+    if(_debug)console.log("AJAX "+url,data,method);
     var req = new XMLHttpRequest();
     req.open(method, url, true);
     req.setRequestHeader('Content-Type', 'application/json');
-    req.setRequestHeader('Authorization', auth);
+    req.setRequestHeader('Authorization', _auth);
     req.setRequestHeader('Api-Key', 'foobar');
     req.onreadystatechange = function() {
         if (req.readyState === 4) {
@@ -150,6 +171,6 @@ function __ajax(url,data,method="GET",callback){
     try{
         req.send(JSON.stringify(data));//post data
     }catch(e){
-        if(debug)console.log("AJAX error."+e);
+        if(_debug)console.log("AJAX error."+e);
     }
 }
