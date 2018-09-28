@@ -139,7 +139,7 @@ function _querySeeds(query,callback){
 
 //自动查询后跳转到下一个地址
 function _next(){
-    _querySeeds(q,function(result){
+    _querySeeds(_query_seed,function(result){
         if(result.count>0){
             window.location.href = result[0].url;
         }else{
