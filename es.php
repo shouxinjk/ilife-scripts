@@ -40,9 +40,15 @@ class wechatCallbackapiTest
 		  	)
 		  )
 		);
+		echo "<div>";
+		var_dump($query_data);
+		echo "</div>";
 		$es_url = "http://search.pcitech.cn/stuff/_search";
 		$result = $this->send_post($es_url,$query_data);
 		echo "<div>".$result."</div>";
+		echo "<div>dump result <br/>";
+		var_dump($result);
+		echo "</div>";
 		$json = json_decode($result);
 		$hits = $json->hits;
 		for($i=0;$i<$hits->total;$i++){
@@ -71,8 +77,8 @@ class wechatCallbackapiTest
 				'method'=>'POST',
 				//'header' => 'Content-type:application/json,Authorization:Basic ZWxhc3RpYzpjaGFuZ2VtZQ==',
 				'header'=>'Content-type:application/x-www-form-urlencoded,Authorization:Basic ZWxhc3RpYzpjaGFuZ2VtZQ==',
-				'content'=>$postdata
-				//'timeout' => 15 * 60 // 超时时间（单位:s）
+				'content'=>$postdata,
+				'timeout'=>15*60 // 超时时间（单位:s）
 			)
 		);
 		$ctx=stream_context_create($options);
