@@ -29,7 +29,12 @@ class wechatCallbackapiTest
     public function responseMsg()
     {
         $keyword = "亲子";
-
+						$itemTpl = " <item>
+									 <Title><![CDATA[%s]]></Title> 
+									 <Description><![CDATA[%s]]></Description>
+									 <PicUrl><![CDATA[%s]]></PicUrl>
+									 <Url><![CDATA[%s]]></Url>
+									 </item>";
 		$itemList = "";
 		$itemCount = 0;			 
 /*
@@ -74,8 +79,10 @@ $query_data='{
 			$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
 			$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
 			$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
-			$itemList = $itemList.$itemStr;
+			//$itemList = $itemList.$itemStr;
 			$itemCount ++;
+			echo '<br/>';
+			echo '<div>'.$itemStr.'</div>'
 		}
     }
 
