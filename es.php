@@ -41,7 +41,7 @@ class wechatCallbackapiTest
 		  )
 		);
 		echo "<div>";
-		var_dump($query_data);
+		var_exprot($query_data);
 		echo "</div>";
 		$es_url = "http://search.pcitech.cn/stuff/_search";
 		$result = $this->send_post($es_url,$query_data);
@@ -72,6 +72,9 @@ class wechatCallbackapiTest
 
 	private function send_post($url,$post_data){
 		$postdata=http_build_query($post_data);
+		echo "<div>---[url]".$url."[postdata] <br/>";
+		echo $postdata;
+		echo "</div>";		
 		$options=array(
 			'http'=>array(
 				'method'=>'POST',
@@ -82,6 +85,9 @@ class wechatCallbackapiTest
 			)
 		);
 		$ctx=stream_context_create($options);
+		echo "<div>dump context <br/>";
+		var_dump($ctx);
+		echo "</div>";
 		$result=file_get_contents($url,false,$ctx);
 		return $result;
 	}
