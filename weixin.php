@@ -97,7 +97,7 @@ class wechatCallbackapiTest
 						$itemList = "";
 						$itemCount = 0;			 
 
-						$retrieve_data_from="arangodb";
+						$retrieve_data_from="es";
 						if($retrieve_data_from=="es"){//从搜索引擎获取
 							$query_data = array(  
 							  'query' => array(
@@ -120,7 +120,7 @@ class wechatCallbackapiTest
 									$tagstr = $tagstr." ".$tag;
 								}
 								$title = $object->title.$tagstr; // title is a field of your content type
-								$decription = $object->summary;
+								$description = $object->summary;
 								$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
 								$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
 								$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
@@ -144,7 +144,7 @@ class wechatCallbackapiTest
 									$tagstr = $tagstr." ".$tag;
 								}
 								$title = $object->title.$tagstr; // title is a field of your content type
-								$decription = $object->summary;
+								$description = $object->summary;
 								$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
 								$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
 								$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
