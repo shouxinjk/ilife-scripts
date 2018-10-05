@@ -200,8 +200,7 @@ class wechatCallbackapiTest
 			)
 		);
 		$ctx = stream_context_create($options);
-		$res = file_get_contents($url,false,$ctx);
-		return $res;
+		return file_get_contents($url,false,$ctx);
 	}
 
 	private function checkSignature()
