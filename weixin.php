@@ -162,6 +162,8 @@ class wechatCallbackapiTest
 							$msgType = "text";
 							$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
 							//*/
+							$msgType = "news";
+							$itemCount = 1;
 							$title = '没有和"'.$keyword.'"相关的内容。重新尝试看看？';
 							$description = "小确幸，大生活";
 							$num = 100+mt_rand(0, 10);
