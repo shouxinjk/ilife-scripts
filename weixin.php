@@ -199,8 +199,8 @@ class wechatCallbackapiTest
 				//'timeout' => 15 * 60 // 超时时间（单位:s）
 			)
 		);
-		$context = stream_context_create($options);
-		$result = file_get_contents($url, false, $context);
+		$ctx = stream_context_create($options);
+		$result = file_get_contents($url,false,$ctx);
 		return $result;
 	}
 
