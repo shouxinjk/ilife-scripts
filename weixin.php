@@ -97,6 +97,38 @@ class wechatCallbackapiTest
 						$itemList = "";
 						$itemCount = 0;			 
 
+						$retrieve_data_from="arangodb";
+						if($retrieve_data_from=="es"){//从搜索引擎查询数据
+							//搜索数据
+							$query_data = array(  
+							  'query' => array(
+							  	'match' => array(
+							  		'full_text' => $keyword
+							  	)
+							  )
+							);
+							$es_url = "http://search.pcitech.cn/stuff/_search";
+							$result = send_post($es_url,$query_data);
+							$json = json_decode($result);
+							$hits = $json->hits;
+							for($i=0;$i<$hits->total;$i++){
+								if($itemCount>4)//we only display 4 items for mobile
+									break;
+								$object = $hits->hits[$i]->_source;
+								$tagstr="";
+								for($k=0;$k<count($object->tags);$k++){
+									$tag = $object->tags[$k];
+									$tagstr = $tagstr." ".$tag;
+								}
+								$title = $object->title.$tagstr; // title is a field of your content type
+								$decription = $object->summary;
+								$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
+								$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
+								$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
+								$itemList = $itemList.$itemStr;
+								$itemCount ++;
+							}
+						}else{//从数据库直接读取数据
 							//get item list from remote JSON
 							$url = "http://data.shouxinjk.net/_db/sea/my/stuff";
 							$lines_array = file($url);
@@ -120,6 +152,7 @@ class wechatCallbackapiTest
 								$itemList = $itemList.$itemStr;
 								$itemCount ++;
 							}
+						}
 
 						if($itemCount>0){
 							$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,$itemCount, $itemList);
@@ -150,13 +183,28 @@ class wechatCallbackapiTest
 				}else{
 					echo "当前还不支持语音、图片、链接等形式哦";
 				}
-
         }else {
         	echo "error";
         	exit;
         }
     }
-		
+
+    private function send_post($url, $post_data) {  
+	  $postdata = http_build_query($post_data);  
+	  $options = array(  
+	    'http' => array(  
+	      'method' => 'POST',  
+		  'header' => 'Content-type:application/json,Authorization:Basic ZWxhc3RpYzpjaGFuZ2VtZQ==',  
+	      //'header' => 'Content-type:application/x-www-form-urlencoded,Content-type:application/json,Authorization:Basic ZWxhc3RpYzpjaGFuZ2VtZQ==',  
+	      'content' => $postdata,  
+	      //'timeout' => 15 * 60 // 超时时间（单位:s）  
+	    )  
+	  );  
+	  $context = stream_context_create($options);  
+	  $result = file_get_contents($url, false, $context);  
+	  return $result;  
+	} 
+	
 	private function checkSignature()
 	{
         $signature = $_GET["signature"];
