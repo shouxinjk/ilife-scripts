@@ -41,7 +41,7 @@ class wechatCallbackapiTest
 		  )
 		);
 		echo "<div>";
-		var_exprot($query_data);
+		var_export($query_data);
 		echo "</div>";
 		$es_url = "http://search.pcitech.cn/stuff/_search";
 		$result = $this->send_post($es_url,$query_data);
