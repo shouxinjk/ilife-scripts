@@ -164,8 +164,8 @@ class wechatCallbackapiTest
 							//*/
 							$msgType = "news";
 							$itemCount = 1;
-							$title = '没有和"'.$keyword.'"相关的内容。重新尝试看看？';
-							$description = "小确幸，大生活";
+							$title = "小确幸，大生活";
+							$description = '好像没有和"'.$keyword.'"相关的内容。直接来看看吧';
 							$num = 100+mt_rand(0, 10);
 							$picUrl = 	"http://www.shouxinjk.net/list/images/logo".substr($num,1,2).".jpeg";							
 							$linkUrl = "http://www.shouxinjk.net/list";
