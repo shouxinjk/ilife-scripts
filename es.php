@@ -32,7 +32,7 @@ class wechatCallbackapiTest
 
 		$itemList = "";
 		$itemCount = 0;			 
-
+/*
 		$query_data = array(  
 		  'query' => array(
 		  	'match' => array(
@@ -40,12 +40,20 @@ class wechatCallbackapiTest
 		  	)
 		  )
 		);
+//*/
+$query_data='{
+    "query": {
+        "match" : { 
+          "full_text":"亲子" 
+        }
+    }
+}';
 		echo "<div>";
 		var_export($query_data);
 		echo "</div>";
 		$es_url = "http://search.pcitech.cn/stuff/_search";
 		//$result = $this->send_post($es_url,$query_data);
-		$result = $this->send_request($es_url,$query_data,null,'POST');
+		$result = $this->send_request($es_url,$query_data,null,'POST','application/json');
 		echo "<div>".$result."</div>";
 		echo "<div>dump result <br/>";
 		var_dump($result);
