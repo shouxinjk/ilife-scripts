@@ -108,15 +108,13 @@ class wechatCallbackapiTest
 							);
 							$es_url = "http://search.pcitech.cn/stuff/_search";
 							$result = $this->send_post($es_url,$query_data);
-							echo var_export($result,true);
+							echo $result;
 							$json = json_decode($result);
-							file_put_contents('/var/log/httpd/weixin.log',var_export($json,true));
 							$hits = $json->hits;
 							for($i=0;$i<$hits->total;$i++){
 								if($itemCount>4)//we only display 4 items for mobile
 									break;
 								$object = $hits->hits[$i]->_source;
-								file_put_contents('/var/log/httpd/weixin.log',var_export($object,true));
 								$tagstr="";
 								for($k=0;$k<count($object->tags);$k++){
 									$tag = $object->tags[$k];
@@ -221,7 +219,6 @@ class wechatCallbackapiTest
 //**/
 	private function send_post($url,$post_data){
 		$postdata=http_build_query($post_data);
-		file_put_contents('/var/log/httpd/weixin.log',var_export($postdata,true));
 		$options=array(
 			'http'=>array(
 				'method'=>'POST',
