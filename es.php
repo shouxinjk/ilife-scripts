@@ -82,7 +82,7 @@ $query_data='{
 			//$itemList = $itemList.$itemStr;
 			$itemCount ++;
 			echo '<br/>';
-			echo '<div>'.$itemStr.'</div>'
+			echo '<div>'.$itemStr.'</div>';
 		}
     }
 
