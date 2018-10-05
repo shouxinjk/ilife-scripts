@@ -187,7 +187,35 @@ class wechatCallbackapiTest
         	exit;
         }
     }
-
+/*
+    private function curlPost($url,$post_data){
+		// Sets our destination URL
+		$endpoint_url = 'https://somesite.com/path/to/endpoint';
+		// Creates our data array that we want to post to the endpoint
+		$data_to_post = [
+			'field1' => 'foo',
+			'field2' => 'bar',
+			'field3' => 'spam',
+			'field4' => 'eggs',
+		];
+		// Sets our options array so we can assign them all at once
+		$options = [
+		  	CURLOPT_URL        => $endpoint_url,
+			CURLOPT_POST       => true,
+			CURLOPT_POSTFIELDS => $data_to_post,
+			CURLOPT_HEADER	   => 1,
+			CURLOPT_USERPWD	   => 'elastic:changeme'			
+		];
+		// Initiates the cURL object
+		$curl = curl_init();
+		// Assigns our options
+		curl_setopt_array($curl, $options);
+		// Executes the cURL POST
+		$results = curl_exec($curl);
+		// Be kind, tidy up!
+		curl_close($curl);    	
+    }
+//**/
 	private function send_post($url,$post_data){
 		$postdata = http_build_query($post_data);
 		$options = array(
@@ -220,6 +248,23 @@ class wechatCallbackapiTest
 		}else{
 			return false;
 		}
+	}
+}
+
+if (!function_exists('http_build_query')) {
+	function http_build_query($data, $prefix='', $sep='', $key='') {
+	   $ret = array();
+	   foreach ((array)$data as $k => $v) {
+	       if (is_int($k) && $prefix != null) $k = urlencode($prefix . $k);
+	       if (!empty($key)) $k = $key.'['.urlencode($k).']';
+	       
+	       if (is_array($v) || is_object($v))
+	           array_push($ret, http_build_query($v, '', $sep, $k));
+	       else    array_push($ret, $k.'='.urlencode($v));
+	   }
+	 
+	   if (empty($sep)) $sep = ini_get('arg_separator.output');
+	   return implode($sep, $ret);
 	}
 }
 
