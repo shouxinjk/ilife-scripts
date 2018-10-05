@@ -99,16 +99,15 @@ class wechatCallbackapiTest
 
 						$retrieve_data_from="es";
 						if($retrieve_data_from=="es"){//从搜索引擎获取
-							$query_data = array(  
-							  'query' => array(
-							  	'match' => array(
-							  		'full_text' => $keyword
-							  	)
-							  )
-							);
+							$query_data='{
+							    "query": {
+							        "match" : { 
+							          "full_text":"'.$keyword.'" 
+							        }
+							    }
+							}';
 							$es_url = "http://search.pcitech.cn/stuff/_search";
-							$result = $this->send_post($es_url,$query_data);
-							echo $result;
+							$result = $this->send_request($es_url,$query_data,null,'POST','application/json');
 							$json = json_decode($result);
 							$hits = $json->hits;
 							for($i=0;$i<$hits->total;$i++){
@@ -188,49 +187,77 @@ class wechatCallbackapiTest
         	exit;
         }
     }
-/*
-    private function curlPost($url,$post_data){
-		// Sets our destination URL
-		$endpoint_url = 'https://somesite.com/path/to/endpoint';
-		// Creates our data array that we want to post to the endpoint
-		$data_to_post = [
-			'field1' => 'foo',
-			'field2' => 'bar',
-			'field3' => 'spam',
-			'field4' => 'eggs',
-		];
-		// Sets our options array so we can assign them all at once
-		$options = [
-		  	CURLOPT_URL        => $endpoint_url,
-			CURLOPT_POST       => true,
-			CURLOPT_POSTFIELDS => $data_to_post,
-			CURLOPT_HEADER	   => 1,
-			CURLOPT_USERPWD	   => 'elastic:changeme'			
-		];
-		// Initiates the cURL object
-		$curl = curl_init();
-		// Assigns our options
-		curl_setopt_array($curl, $options);
-		// Executes the cURL POST
-		$results = curl_exec($curl);
-		// Be kind, tidy up!
-		curl_close($curl);    	
-    }
-//**/
-	private function send_post($url,$post_data){
-		$postdata=http_build_query($post_data);
-		$options=array(
-			'http'=>array(
-				'method'=>'POST',
-				//'header' => 'Content-type:application/json,Authorization:Basic ZWxhc3RpYzpjaGFuZ2VtZQ==',
-				'header'=>'Content-type:application/x-www-form-urlencoded,Authorization:Basic ZWxhc3RpYzpjaGFuZ2VtZQ==',
-				'content'=>$postdata
-				//'timeout' => 15 * 60 // 超时时间（单位:s）
-			)
-		);
-		$ctx=stream_context_create($options);
-		$result=file_get_contents($url,false,$ctx);
-		return $result;
+
+	/**
+	 * 发送HTTP请求
+	 *
+	 * @param string $url 请求地址
+	 * @param string $method 请求方式 GET/POST
+	 * @param string $refererUrl 请求来源地址
+	 * @param array $data 发送数据
+	 * @param string $contentType 
+	 * @param string $timeout
+	 * @param string $proxy
+	 * @return boolean
+	 */
+	function send_request($url, $data, $refererUrl = '', $method = 'GET', $contentType = 'application/json', $timeout = 30, $proxy = false) {
+	    $ch = null;
+	    if('POST' === strtoupper($method)) {
+	    	$header =array();
+			$header[] ='Authorization:Basic ZWxhc3RpYzpjaGFuZ2VtZQ==';//注意：这里为硬编码写死，需要改进
+	        $ch = curl_init($url);
+	        curl_setopt($ch, CURLOPT_POST, 1);
+	        curl_setopt($ch, CURLOPT_HEADER,0 );
+	        curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	        curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
+	        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+	        if ($refererUrl) {
+	            curl_setopt($ch, CURLOPT_REFERER, $refererUrl);
+	        }
+	        if($contentType) {
+	            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:'.$contentType));
+	            $header[] ='Content-Type:'.$contentType;
+	        }
+	        if(is_string($data)){
+	            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+	        } else {
+	            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+	        }
+	        curl_setopt($ch,CURLOPT_HTTPHEADER,$header);
+	    } else if('GET' === strtoupper($method)) {
+	        if(is_string($data)) {
+	            $real_url = $url. (strpos($url, '?') === false ? '?' : ''). $data;
+	        } else {
+	            $real_url = $url. (strpos($url, '?') === false ? '?' : ''). http_build_query($data);
+	        }
+	        $ch = curl_init($real_url);
+	        curl_setopt($ch, CURLOPT_HEADER, 0);
+	        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:'.$contentType));
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+	        if ($refererUrl) {
+	            curl_setopt($ch, CURLOPT_REFERER, $refererUrl);
+	        }
+	    } else {
+	        $args = func_get_args();
+	        return false;
+	    }
+	    if($proxy) {
+	        curl_setopt($ch, CURLOPT_PROXY, $proxy);
+	    }
+	    $ret = curl_exec($ch);
+	    $info = curl_getinfo($ch);
+	    $contents = array(
+	            'httpInfo' => array(
+	                    'send' => $data,
+	                    'url' => $url,
+	                    'ret' => $ret,
+	                    'http' => $info,
+	            )
+	    );
+	    curl_close($ch);
+	    return $ret;
 	}
 
 	private function checkSignature()
