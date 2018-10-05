@@ -156,10 +156,20 @@ class wechatCallbackapiTest
 						if($itemCount>0){
 							$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,$itemCount, $itemList);
 							echo $resultStr;
-						}else{
+						}else{//如果没有则引导到首页
+							/*
 							$contentStr= '没有和"'.$keyword.'"相关的内容。重新尝试看看？';
 							$msgType = "text";
 							$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+							//*/
+							$title = '没有和"'.$keyword.'"相关的内容。重新尝试看看？';
+							$description = "小确幸，大生活";
+							$num = 100+mt_rand(0, 10);
+							$picUrl = 	"http://www.shouxinjk.net/list/images/logo".substr($num,1,2).".jpeg";							
+							$linkUrl = "http://www.shouxinjk.net/list";
+							$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
+							$itemList = $itemList.$itemStr;	
+							$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,$itemCount, $itemList);						
 							echo $resultStr;						
 						}
 					}else{
