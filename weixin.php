@@ -108,7 +108,7 @@ class wechatCallbackapiTest
 							);
 							$es_url = "http://search.pcitech.cn/stuff/_search";
 							$result = $this->send_post($es_url,$query_data);
-							file_put_contents('/var/log/httpd/weixin.log',var_export($result,true));
+							echo var_export($result,true);
 							$json = json_decode($result);
 							file_put_contents('/var/log/httpd/weixin.log',var_export($json,true));
 							$hits = $json->hits;
