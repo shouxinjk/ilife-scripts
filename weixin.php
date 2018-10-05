@@ -98,8 +98,7 @@ class wechatCallbackapiTest
 						$itemCount = 0;			 
 
 						$retrieve_data_from="arangodb";
-						if($retrieve_data_from=="es"){//从搜索引擎查询数据
-							//搜索数据
+						if($retrieve_data_from=="es"){//从搜索引擎获取
 							$query_data = array(  
 							  'query' => array(
 							  	'match' => array(
@@ -108,7 +107,7 @@ class wechatCallbackapiTest
 							  )
 							);
 							$es_url = "http://search.pcitech.cn/stuff/_search";
-							$result = send_post($es_url,$query_data);
+							$result = $this->send_post($es_url,$query_data);
 							$json = json_decode($result);
 							$hits = $json->hits;
 							for($i=0;$i<$hits->total;$i++){
@@ -189,21 +188,21 @@ class wechatCallbackapiTest
         }
     }
 
-    private function send_post($url, $post_data) {  
-	  $postdata = http_build_query($post_data);  
-	  $options = array(  
-	    'http' => array(  
-	      'method' => 'POST',  
-		  'header' => 'Content-type:application/json,Authorization:Basic ZWxhc3RpYzpjaGFuZ2VtZQ==',  
-	      //'header' => 'Content-type:application/x-www-form-urlencoded,Content-type:application/json,Authorization:Basic ZWxhc3RpYzpjaGFuZ2VtZQ==',  
-	      'content' => $postdata,  
-	      //'timeout' => 15 * 60 // 超时时间（单位:s）  
-	    )  
-	  );  
-	  $context = stream_context_create($options);  
-	  $result = file_get_contents($url, false, $context);  
-	  return $result;  
-	} 
+	private function send_post($url, $post_data){
+		$postdata = http_build_query($post_data);
+		$options = array(
+			'http' => array(
+			'method' => 'POST',
+			//'header' => 'Content-type:application/json,Authorization:Basic ZWxhc3RpYzpjaGFuZ2VtZQ==',
+			'header' => 'Content-type:application/x-www-form-urlencoded,Authorization:Basic ZWxhc3RpYzpjaGFuZ2VtZQ==',
+			'content' => $postdata
+			//'timeout' => 15 * 60 // 超时时间（单位:s）
+			)
+		);
+		$context = stream_context_create($options);
+		$result = file_get_contents($url, false, $context);
+		return $result;
+	}
 	
 	private function checkSignature()
 	{
