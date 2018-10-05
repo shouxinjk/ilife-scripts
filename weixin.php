@@ -217,8 +217,8 @@ class wechatCallbackapiTest
     }
 //**/
 	private function send_post($url,$post_data){
-		$postdata = http_build_query($post_data);
-		$options = array(
+		$postdata=http_build_query($post_data);
+		$options=array(
 			'http'=>array(
 				'method'=>'POST',
 				//'header' => 'Content-type:application/json,Authorization:Basic ZWxhc3RpYzpjaGFuZ2VtZQ==',
