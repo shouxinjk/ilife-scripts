@@ -227,8 +227,9 @@ class wechatCallbackapiTest
 				//'timeout' => 15 * 60 // 超时时间（单位:s）
 			)
 		);
-		$ctx = stream_context_create($options);
-		return file_get_contents($url,false,$ctx);
+		$ctx=stream_context_create($options);
+		$result=file_get_contents($url,false,$ctx);
+		return $result;
 	}
 
 	private function checkSignature()
