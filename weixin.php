@@ -97,78 +97,77 @@ class wechatCallbackapiTest
 						$itemList = "";
 						$itemCount = 0;			 
 
-						$retrieve_data_from="es";
-						if($retrieve_data_from=="es"){//从搜索引擎获取
-							$query_data='{
-							    "query": {
-							        "match" : { 
-							          "full_text":"'.$keyword.'" 
-							        }
-							    }
-							}';
-							$es_url = "http://search.pcitech.cn/stuff/_search";
-							$result = $this->send_request($es_url,$query_data,null,'POST','application/json');
-							$json = json_decode($result);
-							$hits = $json->hits;
-							$itemCount = 0;	
-							for($i=0;$i<$hits->total;$i++){
-								if($itemCount>3)//we only display 4 items for mobile
-									break;
-								$object = $hits->hits[$i]->_source;
-								$tagstr="";
-								for($k=0;$k<count($object->tags);$k++){
-									$tag = $object->tags[$k];
-									$tagstr = $tagstr." ".$tag;
-								}
-								$title = $object->title.$tagstr.$hits->total; // title is a field of your content type
-								$description = "Total:".$hits->total;
-								/*
-								$description = str_replace("<br/>","\n",$object->summary);
-								if(strlen($object->summary)>200){
-									$description = substr($description,0,200)."...".$hits->total;//限制长度为100个汉字，共300字符
-								}
-								//*/
-								$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
-								$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
-								$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
-								$itemList = $itemList.$itemStr;
-								$itemCount ++;
+						//从搜索引擎获取
+						$query_data='{
+						    "query": {
+						        "match" : { 
+						          "full_text":"'.$keyword.'" 
+						        }
+						    }
+						}';
+						$es_url = "http://search.pcitech.cn/stuff/_search";
+						$result = $this->send_request($es_url,$query_data,null,'POST','application/json');
+						$json = json_decode($result);
+						$hits = $json->hits;
+						for($i=0;$i<$hits->total;$i++){
+							if($itemCount>3)//we only display 4 items for mobile
+								break;
+							$object = $hits->hits[$i]->_source;
+							$tagstr="";
+							for($k=0;$k<count($object->tags);$k++){
+								$tag = $object->tags[$k];
+								$tagstr = $tagstr." ".$tag;
 							}
-							if($hits->total > $itemCount){//如果有更多内容没显示完，则增加跳转链接
-								$title = "小确幸，大生活";
-								$description = '更多和"'.$keyword.'"相关的东东。直接来看看吧';
-								$num = 100+mt_rand(0, 10);
-								$picUrl = 	"http://www.shouxinjk.net/list/images/logo".substr($num,1,2).".jpeg";							
-								$linkUrl = "http://www.shouxinjk.net/list/index.html?keyword=".$keyword;
-								$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
-								$itemList = $itemList.$itemStr;
-								$itemCount ++;
+							$title = $hits->total." ".$object->title.$tagstr; // title is a field of your content type
+							$description = "Total:".$hits->total;
+							/*
+							$description = str_replace("<br/>","\n",$object->summary);
+							if(strlen($object->summary)>200){
+								$description = substr($description,0,200)."...".$hits->total;//限制长度为100个汉字，共300字符
 							}
-						}else{//从数据库直接读取数据
-							//get item list from remote JSON
-							$url = "http://data.shouxinjk.net/_db/sea/my/stuff";
-							$lines_array = file($url);
-							$lines_string = implode('',$lines_array);            
-							$json = htmlspecialchars($lines_string,ENT_NOQUOTES);
-							$array = json_decode($json);
-							for($i=0;$i<count($array);$i++){
-								if($itemCount>4)//we only display 4 items for mobile
-									break;
-								$object = $array[$i]; // The array could contain multiple instances of your content type
-								$tagstr="";
-								for($k=0;$k<count($object->tags);$k++){
-									$tag = $object->tags[$k];
-									$tagstr = $tagstr." ".$tag;
-								}
-								$title = $object->title.$tagstr; // title is a field of your content type
-								$description = str_replace("<br/>","\n",$object->summary);
-								$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
-								$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
-								$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
-								$itemList = $itemList.$itemStr;
-								$itemCount ++;
-							}
+							//*/
+							$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
+							$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
+							$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
+							$itemList = $itemList.$itemStr;
+							$itemCount ++;
 						}
+						if($hits->total > $itemCount){//如果有更多内容没显示完，则增加跳转链接
+							$title = "小确幸，大生活";
+							$description = '更多和"'.$keyword.'"相关的东东。快来看看';
+							$num = 100+mt_rand(0, 10);
+							$picUrl = 	"http://www.shouxinjk.net/list/images/logo".substr($num,1,2).".jpeg";							
+							$linkUrl = "http://www.shouxinjk.net/list/index.html?keyword=".$keyword;
+							$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
+							$itemList = $itemList.$itemStr;
+							$itemCount ++;
+						}
+
+						//从数据库直接读取数据
+						/*
+						$url = "http://data.shouxinjk.net/_db/sea/my/stuff";
+						$lines_array = file($url);
+						$lines_string = implode('',$lines_array);            
+						$json = htmlspecialchars($lines_string,ENT_NOQUOTES);
+						$array = json_decode($json);
+						for($i=0;$i<count($array);$i++){
+							if($itemCount>4)//we only display 4 items for mobile
+								break;
+							$object = $array[$i]; // The array could contain multiple instances of your content type
+							$tagstr="";
+							for($k=0;$k<count($object->tags);$k++){
+								$tag = $object->tags[$k];
+								$tagstr = $tagstr." ".$tag;
+							}
+							$title = $object->title.$tagstr; // title is a field of your content type
+							$description = str_replace("<br/>","\n",$object->summary);
+							$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
+							$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
+							$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
+							$itemList = $itemList.$itemStr;
+							$itemCount ++;
+						}
+						//*/
 
 						if($itemCount>0){
 							$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,$itemCount, $itemList);
