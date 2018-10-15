@@ -120,7 +120,7 @@ class wechatCallbackapiTest
 									$tagstr = $tagstr." ".$tag;
 								}
 								$title = $object->title.$tagstr; // title is a field of your content type
-								$description = substr(str_replace("<br/>","\n",$object->summary),0,60);//限制长度为60个字符
+								$description = substr(str_replace("<br/>","\n",$object->summary),0,180);//限制长度为60个汉字，共180字符
 								$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
 								$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
 								$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
