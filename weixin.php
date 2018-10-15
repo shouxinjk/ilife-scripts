@@ -120,12 +120,25 @@ class wechatCallbackapiTest
 									$tagstr = $tagstr." ".$tag;
 								}
 								$title = $object->title.$tagstr; // title is a field of your content type
+								$description = "Total:".$hits->total;
+								/*
 								$description = str_replace("<br/>","\n",$object->summary);
-								if(strlen($object->summary)>300){
-									$description = substr($description,0,300)."...".$itemCount;//限制长度为100个汉字，共300字符
+								if(strlen($object->summary)>200){
+									$description = substr($description,0,200)."...".$hits->total;//限制长度为100个汉字，共300字符
 								}
+								//*/
 								$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
 								$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
+								$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
+								$itemList = $itemList.$itemStr;
+								$itemCount ++;
+							}
+							if($hits->total > $itemCount){//如果有更多内容没显示完，则增加跳转链接
+								$title = "小确幸，大生活";
+								$description = '更多和"'.$keyword.'"相关的东东。直接来看看吧';
+								$num = 100+mt_rand(0, 10);
+								$picUrl = 	"http://www.shouxinjk.net/list/images/logo".substr($num,1,2).".jpeg";							
+								$linkUrl = "http://www.shouxinjk.net/list/index.html?keyword=".$keyword;
 								$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
 								$itemList = $itemList.$itemStr;
 								$itemCount ++;
@@ -168,7 +181,7 @@ class wechatCallbackapiTest
 							$msgType = "news";
 							$itemCount = 1;
 							$title = "小确幸，大生活";
-							$description = '好像没有和"'.$keyword.'"相关的内容。直接来看看吧';
+							$description = '好像没有和"'.$keyword.'"相关的东东。直接来看看吧';
 							$num = 100+mt_rand(0, 10);
 							$picUrl = 	"http://www.shouxinjk.net/list/images/logo".substr($num,1,2).".jpeg";							
 							$linkUrl = "http://www.shouxinjk.net/list";
