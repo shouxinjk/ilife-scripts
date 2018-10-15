@@ -96,7 +96,7 @@ class wechatCallbackapiTest
 									 </item>";
 						$itemList = "";
 						$itemCount = 0;			 
-
+/*
 						//从搜索引擎获取
 						$query_data='{
 						    "query": {
@@ -137,9 +137,9 @@ class wechatCallbackapiTest
 							$itemList = $itemList.$itemStr;
 							$itemCount ++;
 						}
-
+//*/
 						//从数据库直接读取数据
-						/*
+						//*
 						$url = "http://data.shouxinjk.net/_db/sea/my/stuff";
 						$lines_array = file($url);
 						$lines_string = implode('',$lines_array);            
