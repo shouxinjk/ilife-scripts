@@ -110,27 +110,28 @@ class wechatCallbackapiTest
 						$json = json_decode($result);
 						$hits = $json->hits;
 
-						//从结果中随机显示一条
-						$which = mt_rand(0, $hits->total-1);
-						$object = $hits->hits[$which]->_source;
-						$tagstr="";
-						for($k=0;$k<count($object->tags);$k++){
-							$tag = $object->tags[$k];
-							$tagstr = $tagstr." ".$tag;
+						//如果命中，则从结果中随机显示一条
+						if($hits->total>0){
+							$which = mt_rand(0, $hits->total-1);
+							$object = $hits->hits[$which]->_source;
+							$tagstr="";
+							for($k=0;$k<count($object->tags);$k++){
+								$tag = $object->tags[$k];
+								$tagstr = $tagstr." ".$tag;
+							}
+							$title = $object->title.$tagstr; // title is a field of your content type
+							$description = str_replace("<br/>","\n",$object->summary);
+							if(strlen($description)>200){
+								$description = $object->tagging;
+							}
+							$picUrl = $object->images[0];//取第一张照片作为LOGO							
+							$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
+							$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
+							$itemList = $itemList.$itemStr;
+							$itemCount ++;
 						}
-						$title = $object->title.$tagstr; // title is a field of your content type
-						$description = str_replace("<br/>","\n",$object->summary);
-						if(strlen($description)>200){
-							$description = $object->tagging;
-						}
-						$picUrl = $object->images[0];//取第一张照片作为LOGO							
-						$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
-						$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
-						$itemList = $itemList.$itemStr;
-						$itemCount ++;
-
 						/* 
-						//由于调整为仅显示一条，即使设置多条也无效。调整为随机显示其中一条
+						//由于调整为仅显示一条，即使设置多条也无效。以下多条代码调整为随机显示其中一条
 						for($i=0;$i<$hits->total && $i<3;$i++){//最多只显示3条
 							$object = $hits->hits[$i]->_source;
 							$tagstr="";
@@ -161,32 +162,6 @@ class wechatCallbackapiTest
 							$itemCount ++;
 						}
 						//**/
-//*/
-						//从数据库直接读取数据
-						/*
-						$url = "http://data.shouxinjk.net/_db/sea/my/stuff";
-						$lines_array = file($url);
-						$lines_string = implode('',$lines_array);            
-						$json = htmlspecialchars($lines_string,ENT_NOQUOTES);
-						$array = json_decode($json);
-						for($i=0;$i<count($array);$i++){
-							if($itemCount>4)//we only display 4 items for mobile
-								break;
-							$object = $array[$i]; // The array could contain multiple instances of your content type
-							$tagstr="";
-							for($k=0;$k<count($object->tags);$k++){
-								$tag = $object->tags[$k];
-								$tagstr = $tagstr." ".$tag;
-							}
-							$title = $object->title.$tagstr; // title is a field of your content type
-							$description = str_replace("<br/>","\n",$object->summary);
-							$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
-							$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
-							$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
-							$itemList = $itemList.$itemStr;
-							$itemCount ++;
-						}
-						//*/
 
 						if($itemCount == 0){//没有符合要求的内容则提示，并跳转到首页
 							$title = "小确幸，大生活";
@@ -202,24 +177,6 @@ class wechatCallbackapiTest
 						$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,$itemCount, $itemList);						
 						echo $resultStr;
 
-						/*
-						if($itemCount>0){
-							$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,$itemCount, $itemList);
-							echo $resultStr;
-						}else{//如果没有则引导到首页
-							$msgType = "news";
-							//$itemCount = 1;
-							$title = "小确幸，大生活";
-							$description = '好像没有和"'.$keyword.'"相关的东东。直接来看看吧';
-							$num = 100+mt_rand(0, 10);
-							$picUrl = 	"http://www.shouxinjk.net/list/images/logo".substr($num,1,2).".jpeg";							
-							$linkUrl = "http://www.shouxinjk.net/list";
-							$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
-							$itemList = $itemList.$itemStr;	
-							$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,1, $itemList);						
-							echo $resultStr;						
-						}
-						//*/
 					}else{
 						echo "【敬请关注】我们正在努力，请稍等稍等";
 					}
