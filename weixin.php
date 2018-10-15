@@ -110,8 +110,9 @@ class wechatCallbackapiTest
 							$result = $this->send_request($es_url,$query_data,null,'POST','application/json');
 							$json = json_decode($result);
 							$hits = $json->hits;
+							$itemCount = 0;	
 							for($i=0;$i<$hits->total;$i++){
-								if($itemCount>4)//we only display 4 items for mobile
+								if($itemCount>3)//we only display 4 items for mobile
 									break;
 								$object = $hits->hits[$i]->_source;
 								$tagstr="";
@@ -119,7 +120,7 @@ class wechatCallbackapiTest
 									$tag = $object->tags[$k];
 									$tagstr = $tagstr." ".$tag;
 								}
-								$title = $object->title.$tagstr; // title is a field of your content type
+								$title = $object->title.$tagstr.$hits->total; // title is a field of your content type
 								$description = "Total:".$hits->total;
 								/*
 								$description = str_replace("<br/>","\n",$object->summary);
@@ -179,7 +180,7 @@ class wechatCallbackapiTest
 							$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
 							//*/
 							$msgType = "news";
-							$itemCount = 1;
+							//$itemCount = 1;
 							$title = "小确幸，大生活";
 							$description = '好像没有和"'.$keyword.'"相关的东东。直接来看看吧';
 							$num = 100+mt_rand(0, 10);
@@ -187,7 +188,7 @@ class wechatCallbackapiTest
 							$linkUrl = "http://www.shouxinjk.net/list";
 							$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
 							$itemList = $itemList.$itemStr;	
-							$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,$itemCount, $itemList);						
+							$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,1, $itemList);						
 							echo $resultStr;						
 						}
 					}else{
