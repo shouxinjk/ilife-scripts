@@ -96,7 +96,7 @@ class wechatCallbackapiTest
 									 </item>";
 						$itemList = "";
 						$itemCount = 0;			 
-/*
+
 						//从搜索引擎获取
 						$query_data='{
 						    "query": {
@@ -109,7 +109,7 @@ class wechatCallbackapiTest
 						$result = $this->send_request($es_url,$query_data,null,'POST','application/json');
 						$json = json_decode($result);
 						$hits = $json->hits;
-						for($i=0;$i<$hits->total && $i<3;$i++){//最多只显示3条
+						for($i=0;$i<$hits->total && $i<3;$i++){//最多只显示3条:由于调整为仅显示一条，即使设置多条也无效！！
 							$object = $hits->hits[$i]->_source;
 							$tagstr="";
 							for($k=0;$k<count($object->tags);$k++){
@@ -139,7 +139,7 @@ class wechatCallbackapiTest
 						}
 //*/
 						//从数据库直接读取数据
-						//*
+						/*
 						$url = "http://data.shouxinjk.net/_db/sea/my/stuff";
 						$lines_array = file($url);
 						$lines_string = implode('',$lines_array);            
