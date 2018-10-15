@@ -39,6 +39,7 @@ class wechatCallbackapiTest
                 $toUsername = $postObj->ToUserName;
                 $keyword = trim($postObj->Content);
                 $time = time();
+                //text type
                 $textTpl = "<xml>
 							<ToUserName><![CDATA[%s]]></ToUserName>
 							<FromUserName><![CDATA[%s]]></FromUserName>
@@ -47,16 +48,44 @@ class wechatCallbackapiTest
 							<Content><![CDATA[%s]]></Content>
 							<FuncFlag>0</FuncFlag>
 							</xml>";   
+				//news type
+				$listTpl=" <xml>
+							 <ToUserName><![CDATA[%s]]></ToUserName>
+							 <FromUserName><![CDATA[%s]]></FromUserName>
+							 <CreateTime>%s</CreateTime>
+							 <MsgType><![CDATA[%s]]></MsgType>
+							 <ArticleCount>%s</ArticleCount>
+							 <Articles>%s</Articles>
+							 </xml> ";
+				$itemTpl = " <item>
+							 <Title><![CDATA[%s]]></Title> 
+							 <Description><![CDATA[%s]]></Description>
+							 <PicUrl><![CDATA[%s]]></PicUrl>
+							 <Url><![CDATA[%s]]></Url>
+							 </item>";
 
 				//获取事件类型
 				$type=$postObj->MsgType;
 				if($type=='event'){
 					$event = $postObj->Event;
 					if($event=='subscribe'){
-						$contentStr= "小确幸，大生活。欢迎关注。";
+						/*
+						$contentStr= "小确幸，大生活。欢迎关注，输入你感兴趣的内容，如亲子、零食、阅读。";
 						$msgType = "text";
 						$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
 						echo $resultStr;
+						//*/
+						$itemCount = 1;
+						$msgType = "news";
+						$title = "小确幸，大生活";
+						$description = '小确幸，大生活。欢迎关注，快来看看';
+						$num = 100+mt_rand(0, 10);
+						$picUrl = 	"http://www.shouxinjk.net/list/images/logo".substr($num,1,2).".jpeg";							
+						$linkUrl = "http://www.shouxinjk.net/list";
+						$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
+						$itemList = $itemList.$itemStr;		
+						$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,$itemCount, $itemList);						
+						echo $resultStr;											
 					}else if($event=='unsubscribe'){
 						$contentStr= "客官慢走，欢迎再来。";
 						$msgType = "text";
