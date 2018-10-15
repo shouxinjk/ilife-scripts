@@ -109,24 +109,19 @@ class wechatCallbackapiTest
 						$result = $this->send_request($es_url,$query_data,null,'POST','application/json');
 						$json = json_decode($result);
 						$hits = $json->hits;
-						for($i=0;$i<$hits->total;$i++){
-							if($itemCount>3)//we only display 4 items for mobile
-								break;
+						for($i=0;$i<$hits->total && $i<3;$i++){//最多只显示3条
 							$object = $hits->hits[$i]->_source;
 							$tagstr="";
 							for($k=0;$k<count($object->tags);$k++){
 								$tag = $object->tags[$k];
 								$tagstr = $tagstr." ".$tag;
 							}
-							$title = $hits->total." ".$object->title.$tagstr; // title is a field of your content type
-							$description = "Total:".$hits->total;
-							/*
+							$title = $object->title.$tagstr; // title is a field of your content type
 							$description = str_replace("<br/>","\n",$object->summary);
-							if(strlen($object->summary)>200){
-								$description = substr($description,0,200)."...".$hits->total;//限制长度为100个汉字，共300字符
+							if(strlen($description)>200){
+								$description = substr($description,0,199)."...";//限制长度为100个汉字，共300字符
 							}
-							//*/
-							$picUrl = 	$object->images[0];//取第一张照片作为LOGO							
+							$picUrl = $object->images[0];//取第一张照片作为LOGO							
 							$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
 							$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
 							$itemList = $itemList.$itemStr;
@@ -169,15 +164,25 @@ class wechatCallbackapiTest
 						}
 						//*/
 
+						if($itemCount == 0){//没有符合要求的内容则提示，并跳转到首页
+							$title = "小确幸，大生活";
+							$description = '好像没有和"'.$keyword.'"相关的东东。直接来看看吧';
+							$num = 100+mt_rand(0, 10);
+							$picUrl = 	"http://www.shouxinjk.net/list/images/logo".substr($num,1,2).".jpeg";							
+							$linkUrl = "http://www.shouxinjk.net/list";
+							$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
+							$itemList = $itemList.$itemStr;			
+							$itemCount ++;					
+						}
+
+						$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,$itemCount, $itemList);						
+						echo $resultStr;
+
+						/*
 						if($itemCount>0){
 							$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,$itemCount, $itemList);
 							echo $resultStr;
 						}else{//如果没有则引导到首页
-							/*
-							$contentStr= '没有和"'.$keyword.'"相关的内容。重新尝试看看？';
-							$msgType = "text";
-							$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
-							//*/
 							$msgType = "news";
 							//$itemCount = 1;
 							$title = "小确幸，大生活";
@@ -190,6 +195,7 @@ class wechatCallbackapiTest
 							$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,1, $itemList);						
 							echo $resultStr;						
 						}
+						//*/
 					}else{
 						echo "【敬请关注】我们正在努力，请稍等稍等";
 					}
