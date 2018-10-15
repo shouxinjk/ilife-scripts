@@ -97,38 +97,52 @@ class wechatCallbackapiTest
 						$itemList = "";
 						$itemCount = 0;			 
 
-						//从搜索引擎获取
-						$query_data='{
+						//对结果计数
+						$query_data_count='{
+							"size":0,
 						    "query": {
 						        "match" : { 
 						          "full_text":"'.$keyword.'" 
 						        }
 						    }
-						}';
+						}';						
 						$es_url = "http://search.pcitech.cn/stuff/_search";
-						$result = $this->send_request($es_url,$query_data,null,'POST','application/json');
+						$result = $this->send_request($es_url,$query_data_count,null,'POST','application/json');
 						$json = json_decode($result);
-						$hits = $json->hits;
-
-						//如果命中，则从结果中随机显示一条
-						if($hits->total>0){
-							$which = mt_rand(0, $hits->total-1);
-							$object = $hits->hits[$which]->_source;
-							$tagstr="";
-							for($k=0;$k<count($object->tags);$k++){
-								$tag = $object->tags[$k];
-								$tagstr = $tagstr." ".$tag;
+						$total = $json->hits->total;
+						if($total>0){//从结果中随机取一条。注意需要另外发起搜索
+							$which = mt_rand(0, $total-1);
+							//从搜索引擎获取
+							$query_data='{
+								"from":'.$which.',
+								"size":1,
+							    "query": {
+							        "match" : { 
+							          "full_text":"'.$keyword.'" 
+							        }
+							    }
+							}';							
+							$result = $this->send_request($es_url,$query_data,null,'POST','application/json');
+							$json = json_decode($result);
+							$hits = $json->hits;
+							if($hits->total>0){//默认取第一条。此处针对可能被删除的情况
+								$object = $hits->hits[0]->_source;
+								$tagstr="";
+								for($k=0;$k<count($object->tags);$k++){
+									$tag = $object->tags[$k];
+									$tagstr = $tagstr." ".$tag;
+								}
+								$title = $object->title.$tagstr; // title is a field of your content type
+								$description = str_replace("<br/>","\n",$object->summary);
+								if(strlen($description)>200){
+									$description = $object->tagging;
+								}
+								$picUrl = $object->images[0];//取第一张照片作为LOGO							
+								$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
+								$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
+								$itemList = $itemList.$itemStr;
+								$itemCount ++;
 							}
-							$title = $object->title.$tagstr; // title is a field of your content type
-							$description = str_replace("<br/>","\n",$object->summary);
-							if(strlen($description)>200){
-								$description = $object->tagging;
-							}
-							$picUrl = $object->images[0];//取第一张照片作为LOGO							
-							$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
-							$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
-							$itemList = $itemList.$itemStr;
-							$itemCount ++;
 						}
 						/* 
 						//由于调整为仅显示一条，即使设置多条也无效。以下多条代码调整为随机显示其中一条
