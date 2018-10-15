@@ -109,7 +109,29 @@ class wechatCallbackapiTest
 						$result = $this->send_request($es_url,$query_data,null,'POST','application/json');
 						$json = json_decode($result);
 						$hits = $json->hits;
-						for($i=0;$i<$hits->total && $i<3;$i++){//最多只显示3条:由于调整为仅显示一条，即使设置多条也无效！！
+
+						//从结果中随机显示一条
+						$which = mt_rand(0, $hits->total-1);
+						$object = $hits->hits[$which]->_source;
+						$tagstr="";
+						for($k=0;$k<count($object->tags);$k++){
+							$tag = $object->tags[$k];
+							$tagstr = $tagstr." ".$tag;
+						}
+						$title = $object->title.$tagstr; // title is a field of your content type
+						$description = str_replace("<br/>","\n",$object->summary);
+						if(strlen($description)>200){
+							$description = $object->tagging;
+						}
+						$picUrl = $object->images[0];//取第一张照片作为LOGO							
+						$linkUrl = "http://www.shouxinjk.net/list/info.html?id=".$object->_key;
+						$itemStr = sprintf($itemTpl,$title,$description,$picUrl,$linkUrl);
+						$itemList = $itemList.$itemStr;
+						$itemCount ++;
+
+						/* 
+						//由于调整为仅显示一条，即使设置多条也无效。调整为随机显示其中一条
+						for($i=0;$i<$hits->total && $i<3;$i++){//最多只显示3条
 							$object = $hits->hits[$i]->_source;
 							$tagstr="";
 							for($k=0;$k<count($object->tags);$k++){
@@ -127,6 +149,7 @@ class wechatCallbackapiTest
 							$itemList = $itemList.$itemStr;
 							$itemCount ++;
 						}
+
 						if($hits->total > $itemCount){//如果有更多内容没显示完，则增加跳转链接
 							$title = "小确幸，大生活";
 							$description = '更多和"'.$keyword.'"相关的东东。快来看看';
@@ -137,6 +160,7 @@ class wechatCallbackapiTest
 							$itemList = $itemList.$itemStr;
 							$itemCount ++;
 						}
+						//**/
 //*/
 						//从数据库直接读取数据
 						/*
