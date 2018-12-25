@@ -14,7 +14,7 @@ var _query=
 
 var _query_seed=
     {
-        collection: "my_stuff", //TODO：需要调整为seeds用于执行采集
+        collection: "seeds", //TODO：需要调整为seeds用于执行采集
         example:{
             link:null
         },
