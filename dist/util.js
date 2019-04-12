@@ -14,9 +14,9 @@ var _query=
 
 var _query_seed=
     {
-        collection: "seeds", //TODO：需要调整为seeds用于执行采集
+        collection: "seeds", 
         example:{
-            link:null
+            status:"new"//查询状态为new的待采集链接
         },
         limit:1
     };
@@ -144,7 +144,15 @@ function _querySeeds(query,callback){
 function _next(){
     _querySeeds(_query_seed,function(result){
         if(result.count>0){
-            window.location.href = result.result[0].url;
+            //将seed链接状态更改为 done
+            var seed = result.result[0];
+            seed.status = "done";
+            if(debug)console.log("now change seed status.",seed);
+            __postData("seeds", seed,function(res){
+                if(debug)console.log("change seed status done.",seed);
+            });
+            //控制浏览器跳转到新页面
+            //window.location.href = result.result[0].url;
         }else{
             if(debug)console.log("no more pending url:s");
         }
