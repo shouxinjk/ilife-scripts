@@ -1,5 +1,5 @@
 //_debug 
-var _debug=false;
+var _debug=true;
 
 //data api
 var _spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
@@ -45,7 +45,7 @@ function fullUrl(url) {
 }
 
 //pivate method
-//check data and dispatch to create or update
+//新建数据。
 function __postData(collection,data,callback){
     if(_debug)console.log("check if data exists.[spi.url]"+_spi+collection,"[data.url]"+data.url);
     var _key = hex_md5(data.url);
@@ -60,7 +60,7 @@ function __postData(collection,data,callback){
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {//got result
                 var result = JSON.parse(req.responseText);
-                if(_debug)console.log(result,result.count);
+                if(_debug)console.log("\n\ncheck result.",result,result.count);
                 result.count === 0 ? __create(_spi+collection,data,callback) : __update(_spi+collection+"/"+_key,data,callback);
             } else {//query error
                 if(_debug)console.log(JSON.parse(req.responseText));
