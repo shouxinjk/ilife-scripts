@@ -150,9 +150,9 @@ function _next(){
             if(debug)console.log("now change seed status.",seed);
             __postData("seeds", seed,function(res){
                 if(debug)console.log("change seed status done.",seed);
+                //控制浏览器跳转到新页面
+                window.location.href = result.result[0].url;                
             });
-            //控制浏览器跳转到新页面
-            window.location.href = result.result[0].url;
         }else{
             if(debug)console.log("no more pending url:s");
         }

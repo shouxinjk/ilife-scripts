@@ -78,7 +78,7 @@ class wechatCallbackapiTest
 						$itemCount = 1;
 						$msgType = "news";
 						$title = "小确幸，大生活";
-						$description = '小确幸，大生活。欢迎关注，快来看看';
+						$description = '小确幸，大生活。欢迎关注，发现你的确幸生活';
 						$num = 100+mt_rand(0, 10);
 						$picUrl = 	"http://www.shouxinjk.net/list/images/logo".substr($num,1,2).".jpeg";							
 						$linkUrl = "http://www.shouxinjk.net/list";
@@ -87,7 +87,7 @@ class wechatCallbackapiTest
 						$resultStr = sprintf($listTpl, $fromUsername, $toUsername, $time, $msgType,$itemCount, $itemList);						
 						echo $resultStr;											
 					}else if($event=='unsubscribe'){
-						$contentStr= "客官慢走，欢迎再来。";
+						$contentStr= "I am so sad are leaving. But I am sure you will come back. See you then.";
 						$msgType = "text";
 						$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
 						echo $resultStr;
