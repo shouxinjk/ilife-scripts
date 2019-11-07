@@ -147,14 +147,14 @@ function _next(){
             //将seed链接状态更改为 done
             var seed = result.result[0];
             seed.status = "done";
-            if(debug)console.log("now change seed status.",seed);
+            if(_debug)console.log("now change seed status.",seed);
             __postData("seeds", seed,function(res){
-                if(debug)console.log("change seed status done.",seed);
+                if(_debug)console.log("change seed status done.",seed);
                 //控制浏览器跳转到新页面
                 //window.location.href = result.result[0].url;                
             });
         }else{
-            if(debug)console.log("no more pending url:s");
+            if(_debug)console.log("no more pending url:s");
         }
     });
 }
