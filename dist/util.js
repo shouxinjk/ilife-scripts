@@ -1,5 +1,5 @@
 //_debug 
-var _debug=true;
+var _debug=false;
 
 //data api
 var _spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
@@ -149,7 +149,7 @@ function _next(){
             seed.status = "done";
             if(_debug)console.log("now change seed status.",seed);
             __postData("seeds", seed,function(res){
-                if(_debug)console.log("change seed status done.",seed);
+                if(_debug)console.log("change seed status done and try to redirect to next one",seed);
                 //控制浏览器跳转到新页面
                 //window.location.href = result.result[0].url;                
             });
