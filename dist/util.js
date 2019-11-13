@@ -27,6 +27,12 @@ var _auth = 'Basic aWxpZmU6aWxpZmU=';
 //pending urls
 var _seeds=[];
 
+//check production mode
+function isProduction(client){
+    //here we can control client
+    return _debug;
+}
+
 //create a new seed
 function commitUrl(data,callback){
      __postData("seeds", data,callback);
