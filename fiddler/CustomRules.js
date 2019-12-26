@@ -277,7 +277,7 @@ class Handlers
         
     //区分需要处理的站点
     static function extractData(oSession: Session){
-        if(oSession.responseCode == 200 && oSession.host.Contains("api1.lianlianlvyou.com")){//联联周边游
+        if(oSession.responseCode == 200 && oSession.host.Contains(".lianlianlvyou.com")){//联联周边游
             extractLianlianly(oSession);
         }
         if(oSession.responseCode == 200 && oSession.host.Contains(".lhs11.com")){//旅划算
