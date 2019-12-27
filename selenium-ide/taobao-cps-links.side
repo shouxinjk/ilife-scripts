@@ -1,0 +1,137 @@
+{
+  "id": "54c67b96-ee66-4aaf-8f30-3a28c1b3d39c",
+  "version": "2.0",
+  "name": "taobao-cps-links",
+  "url": "https://pub.alimama.com/myunion.htm?spm=a219t.11816977.0.dbdddd32d1.ffd175a5ytkbzq#!/promo/self/links",
+  "tests": [{
+    "id": "1643de25-24ef-4c0f-8e4d-c9d91ac56b72",
+    "name": "Untitled",
+    "commands": [{
+      "id": "3d4d0bf7-07a4-41e1-8dd5-5d2435588e7a",
+      "comment": "",
+      "command": "open",
+      "target": "https://pub.alimama.com/myunion.htm?spm=a219t.11816977.0.dbdddd32d1.ffd175a5ytkbzq#!/promo/self/links",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "321e95d6-1165-406c-84e3-d73df1004f84",
+      "comment": "",
+      "command": "click",
+      "target": "id=J_originUrl",
+      "targets": [
+        ["id=J_originUrl", "id"],
+        ["css=#J_originUrl", "css:finder"],
+        ["xpath=//textarea[@id='J_originUrl']", "xpath:attributes"],
+        ["xpath=//div[@id='brix_538']/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b5f4a77e-5fb0-4c55-a1c5-206acda822b3",
+      "comment": "",
+      "command": "click",
+      "target": "css=#J_sites_dropdown .dropdown-text",
+      "targets": [
+        ["css=#J_sites_dropdown .dropdown-text", "css:finder"],
+        ["xpath=//span[@value='576750191']", "xpath:attributes"],
+        ["xpath=//div[@id='J_sites_dropdown']/span/span", "xpath:idRelative"],
+        ["xpath=//span/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "addd6e65-60b9-4191-aae5-60a4d1a9e870",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-size28:nth-child(1)",
+      "targets": [
+        ["css=.btn-size28:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='brix_711']/div/button", "xpath:idRelative"],
+        ["xpath=//vframe/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'确定')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5dd47753-56a0-4542-9f7b-c68be9d59384",
+      "comment": "",
+      "command": "click",
+      "target": "id=clip1",
+      "targets": [
+        ["id=clip1", "id"],
+        ["css=#clip1", "css:finder"],
+        ["xpath=//textarea[@id='clip1']", "xpath:attributes"],
+        ["xpath=//div[@id='brix_brick_1295']/textarea", "xpath:idRelative"],
+        ["xpath=//div/div/div/div/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d8ed0a80-65fa-43c6-93e2-e160c643f397",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tab-nav > li:nth-child(4)",
+      "targets": [
+        ["css=.tab-nav > li:nth-child(4)", "css:finder"],
+        ["xpath=//div[@id='brix_1250']/ul/li[4]", "xpath:idRelative"],
+        ["xpath=//vframe/div/vframe/div/ul/li[4]", "xpath:position"],
+        ["xpath=//li[contains(.,'淘口令')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "dac81300-054f-4e0f-8c99-670086e20d67",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tab-nav > li:nth-child(3)",
+      "targets": [
+        ["css=.tab-nav > li:nth-child(3)", "css:finder"],
+        ["xpath=//div[@id='brix_1250']/ul/li[3]", "xpath:idRelative"],
+        ["xpath=//vframe/div/vframe/div/ul/li[3]", "xpath:position"],
+        ["xpath=//li[contains(.,'二维码')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "fa0ae998-3066-4426-8d31-889e9e94c0ec",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tab-nav > li:nth-child(2)",
+      "targets": [
+        ["css=.tab-nav > li:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='brix_1250']/ul/li[2]", "xpath:idRelative"],
+        ["xpath=//vframe/div/vframe/div/ul/li[2]", "xpath:position"],
+        ["xpath=//li[contains(.,'短链接')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c396108c-66aa-4334-84cf-f4ffacc04491",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tab-nav > li:nth-child(1)",
+      "targets": [
+        ["css=.tab-nav > li:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='brix_1250']/ul/li", "xpath:idRelative"],
+        ["xpath=//vframe/div/vframe/div/ul/li", "xpath:position"],
+        ["xpath=//li[contains(.,'长链接')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ad9e4ba6-a631-4f5c-a13c-0294eaef4ed2",
+      "comment": "",
+      "command": "click",
+      "target": "css=.dialog-ext-close-x",
+      "targets": [
+        ["css=.dialog-ext-close-x", "css:finder"],
+        ["xpath=//div[5]/a/span", "xpath:position"],
+        ["xpath=//span[contains(.,'ź')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "ba1281b2-11f5-4055-a125-33d8d60e5f90",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["1643de25-24ef-4c0f-8e4d-c9d91ac56b72"]
+  }],
+  "urls": ["https://pub.alimama.com/myunion.htm?spm=a219t.11816977.0.dbdddd32d1.ffd175a5ytkbzq#!/promo/self/links"],
+  "plugins": []
+}
