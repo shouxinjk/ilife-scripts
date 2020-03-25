@@ -43,6 +43,11 @@ function commitData(data,callback){
     __postData("my_stuff", data,callback);
 }
 
+//update broker seed
+function commitBrokerSeed(data,callback){
+     __update(_spi+"broker_seeds/"+data._key,data,callback);
+}
+
 //get full url
 function fullUrl(url) {
     var a = document.createElement('a');
