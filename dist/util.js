@@ -4,6 +4,7 @@ var _debug=false;
 //data api
 var _spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
 var _spi_query = 'https://data.shouxinjk.net/_db/sea/_api/simple/by-example';
+var _spi_aql = 'https://data.shouxinjk.net/_db/sea/_api/cursor';
 var _query=
     {
         collection: "my_stuff", 
@@ -46,6 +47,9 @@ function commitData(data,callback){
 //update broker seed
 function commitBrokerSeed(data,callback){
      __update(_spi+"broker_seeds/"+data._key,data,callback);
+}
+function commitBrokerSeeds(data,callback){
+     __ajax(_spi_aql,data,"POST",callback);
 }
 
 //get full url
