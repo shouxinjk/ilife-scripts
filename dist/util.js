@@ -54,7 +54,7 @@ function commitBrokerSeeds(data,callback){
 
 //提交新的prop_values
 function commitPropValues(data,callback){
-     __ajax(_spi+"prop_values/",data,"POST",callback);
+     __ajax(_spi+"prop_values",data,"POST",callback);
 }
 
 //get full url
