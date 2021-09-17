@@ -1,6 +1,23 @@
 //_debug 
 var _debug=false;
 
+var _meta_item=JSON.stringify({
+    status:{
+        crawl:"ready",
+        sync:"pending",
+        classify: "pending",
+        measure: "pending",
+        evaluate: "pending",
+        index: "pending",
+        monitize: "pending",
+        poetize: "pending",
+        satisify: "pending"
+    },
+    timestamp:{
+        crawl:new Date()
+    }
+});
+
 //data api
 var _spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
 var _spi_query = 'https://data.shouxinjk.net/_db/sea/_api/simple/by-example';
@@ -116,8 +133,14 @@ function __create(url,data,callback){
         }
     };
     data._key = hex_md5(data.url);
+    //自动添加meta数据
+    const mergedData = {
+      ...JSON.parse(_meta_item),
+      ...data
+    };
+    console.log("try to send data.",mergedData);
     try{
-        req.send(JSON.stringify(data));//post data
+        req.send(JSON.stringify(mergedData));//post data
     }catch(e){
         if(_debug)console.log("Error while update data to create new document."+e);
     }
@@ -146,7 +169,13 @@ function __update(url,data,callback){
     };
     try{
         delNullProperty(data)//删除其中空值，仅仅更新有数据的部分，避免数据覆盖
-        req.send(JSON.stringify(data));//post data
+        //自动添加meta数据
+        const mergedData = {
+          ...JSON.parse(_meta_item),
+          ...data
+        };
+        console.log("try to send data.",mergedData);        
+        req.send(JSON.stringify(mergedData));//post data
     }catch(e){
         if(_debug)console.log("Error while update data to create new document."+e);
     }
