@@ -124,6 +124,8 @@ function __create(url,data,callback){
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {
                 if(_debug)console.log(JSON.parse(req.responseText));
+                //提交到本地
+                __postMessage(data);
             } else {
                 // Handle error case
             }
@@ -159,6 +161,8 @@ function __update(url,data,callback){
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {
                 if(_debug)console.log(JSON.parse(req.responseText));
+                //提交到本地
+                __postMessage(data);
             } else {
                 // Handle error case
             }
@@ -188,6 +192,20 @@ function queryData(query,callback){
 //每次获取1条seed
 function _querySeeds(query,callback){
     __ajax(_spi_query,query,"PUT",callback);
+}
+
+//将护具提交给本地。约定向指定frame发消息
+function __postMessage(item){
+    if(document.getElementById('sxListFrame')){
+        console.log("post message to  local cookie. ");
+        document.getElementById('sxListFrame').contentWindow.postMessage({
+          sxCookie:{
+            action:"commit",
+            key:"sxItem",
+            value:item
+          }
+        }, "*");     
+    }
 }
 
 //自动查询后跳转到下一个地址
