@@ -123,7 +123,19 @@ function __create(url,data,callback){
     req.onreadystatechange = function() {
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {
-                if(_debug)console.log(JSON.parse(req.responseText));
+                if(_debug)console.log("commit successfully. got callback",JSON.parse(req.responseText),req);
+                /**
+                //将meta数据、提交的item数据、返回结果合并作为item，存储到本地
+                var res = JSON.parse(req.responseText);
+                const mergedData = {
+                  ...JSON.parse(_meta_item),
+                  ...data,
+                  ...res
+                };
+                //提交到本地：返回数据带有_key等信息
+                if(_debug)console.log("commit successfully. got callback",mergedData);
+                __postMessage(mergedData);    
+                //**/             
             } else {
                 // Handle error case
             }
@@ -138,11 +150,13 @@ function __create(url,data,callback){
       ...JSON.parse(_meta_item),
       ...data
     };
+    //提交到本地：由于网络存在中断情况，先提交到本地，在控制面板中显示
+    if(_debug)console.log("try to send local storage",mergedData);
+    __postMessage(mergedData);     
+    //提交到服务器
     console.log("try to send data.",mergedData);
     try{
-        req.send(JSON.stringify(mergedData));//post data
-        //提交到本地：默认直接提交，不考虑网络因素
-        __postMessage(data);        
+        req.send(JSON.stringify(mergedData));//post data       
     }catch(e){
         if(_debug)console.log("Error while update data to create new document."+e);
     }
@@ -160,7 +174,19 @@ function __update(url,data,callback){
     req.onreadystatechange = function() {
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {
-                if(_debug)console.log(JSON.parse(req.responseText));
+                if(_debug)console.log("commit successfully. got callback",JSON.parse(req.responseText),req);
+                //将meta数据、提交的item数据、返回结果合并作为item，存储到本地
+                /**
+                var res = JSON.parse(req.responseText);
+                const mergedData = {
+                  ...JSON.parse(_meta_item),
+                  ...data,
+                  ...res
+                };
+                //提交到本地：返回数据带有_key等信息
+                if(_debug)console.log("commit successfully. got callback",mergedData);
+                __postMessage(mergedData);     
+                //**/            
             } else {
                 // Handle error case
             }
@@ -176,10 +202,11 @@ function __update(url,data,callback){
           ...JSON.parse(_meta_item),
           ...data
         };
-        console.log("try to send data.",mergedData);        
-        req.send(JSON.stringify(mergedData));//post data
-        //提交到本地:默认直接提交，不考虑网络因素
-        __postMessage(data);        
+        if(_debug)console.log("try to send data.",mergedData);        
+        req.send(JSON.stringify(mergedData));//post data       
+        //提交到本地：由于网络存在中断情况，此处先提交到本地，在控制面板中显示
+        if(_debug)console.log("try to send local storage",mergedData);
+        __postMessage(mergedData);         
     }catch(e){
         if(_debug)console.log("Error while update data to create new document."+e);
     }
@@ -196,13 +223,13 @@ function _querySeeds(query,callback){
 
 //将护具提交给本地。约定向指定frame发消息
 function __postMessage(item){
-    console.log("try to post message to local cookie. ",item);
+    if(_debug)console.log("try to post message to local cookie. ",item);
     if(document.getElementById('sxListFrame')){
         console.log("post message to  local cookie. ",item);
         document.getElementById('sxListFrame').contentWindow.postMessage({
           sxCookie:{
             action:"save",
-            key:"sxItem",
+            key:"sxPendingItem",
             value:item
           }
         }, "*");     
