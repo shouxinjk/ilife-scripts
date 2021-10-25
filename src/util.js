@@ -18,6 +18,11 @@ var _meta_item=JSON.stringify({
     }
 });
 
+//commitTimer
+var _sxTimer = null;
+var _sxDataReceived = null;//milliseconds while receiving data
+var _sxDuration = 800;//milliseconds from data received to commit
+
 //data api
 var _spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
 var _spi_query = 'https://data.shouxinjk.net/_db/sea/_api/simple/by-example';
@@ -57,8 +62,38 @@ function commitUrl(data,callback){
 }
 
 //create a new item
+/**
 function commitData(data,callback){
     __postData("my_stuff", data,callback);
+}
+//**/
+function commitData(data,callback){
+    //set initially received time 
+    if(!_sxDataReceived){
+        _sxDataReceived = new Date().getTime();
+    }
+
+    //check duration and clear timer
+    if(_sxTimer && new Date().getTime()-_sxDataReceived < _sxDuration){
+        clearTimeout(_sxTimer);
+        _sxTimer = null;
+    }
+
+    //post  data to local storage
+    data._key = hex_md5(data.url);//generate _key manually
+    const mergedData = {//merge meta data
+      ...JSON.parse(_meta_item),
+      ...data
+    };
+    if(_debug)console.log("try to send local storage",mergedData);
+    __postMessage(mergedData); //commit to local storage
+
+    //(re)start a new timer to commit data
+    _sxTimer = setTimeout(function(){
+        console.log("trigger data commit.");
+        __postData("my_stuff", data,callback);
+    },_sxDuration);
+
 }
 
 //update broker seed
@@ -151,8 +186,8 @@ function __create(url,data,callback){
       ...data
     };
     //提交到本地：由于网络存在中断情况，先提交到本地，在控制面板中显示
-    if(_debug)console.log("try to send local storage",mergedData);
-    __postMessage(mergedData);     
+    //if(_debug)console.log("try to send local storage",mergedData);
+    //__postMessage(mergedData);     
     //提交到服务器
     console.log("try to send data.",mergedData);
     try{
@@ -205,8 +240,8 @@ function __update(url,data,callback){
         if(_debug)console.log("try to send data.",mergedData);        
         req.send(JSON.stringify(mergedData));//post data       
         //提交到本地：由于网络存在中断情况，此处先提交到本地，在控制面板中显示
-        if(_debug)console.log("try to send local storage",mergedData);
-        __postMessage(mergedData);         
+        //if(_debug)console.log("try to send local storage",mergedData);
+        //__postMessage(mergedData);         
     }catch(e){
         if(_debug)console.log("Error while update data to create new document."+e);
     }
