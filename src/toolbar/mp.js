@@ -146,6 +146,14 @@ function listenPostMessage(){
                 }
             }
         }
+        if(data && data.sxRedirect){
+            console.log("try to redirect",data.sxRedirect);
+            if(data.sxTargetWindow){
+                window.open(data.sxRedirect,data.sxTargetWindow);
+            }else{
+                window.open(data.sxRedirect);
+            }
+        }        
     },false);
 }
 
