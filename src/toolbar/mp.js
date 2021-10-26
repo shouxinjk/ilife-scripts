@@ -14,11 +14,11 @@ function sxInitialize(jNode){
 
     //设置操作按钮：显示或隐藏
     var htmlBtn = "";
-    htmlBtn += '<div id="sxHideBtnDiv" class="info" style="position:fixed;z-index:999;top:140px;right:30px;background-color:#fff;width:50px;height:20px;border-radius:5px;display:none">';
+    htmlBtn += '<div id="sxHideBtnDiv" class="info" style="position:fixed;z-index:2147483647;top:140px;right:30px;background-color:#fff;width:50px;height:20px;border-radius:5px;display:none">';
     htmlBtn += '<div style="line-height:22px;color:grey;">隐藏</div>';
     htmlBtn += '</div>';
     //show btn
-    htmlBtn += '<div id="sxShowBtnDiv" class="info" style="position:fixed;z-index:999;top:130px;right:0;background-color:#fff;width:44px;height:150px;border-radius:5px;padding-left:12px;display:block">';
+    htmlBtn += '<div id="sxShowBtnDiv" class="info" style="position:fixed;z-index:2147483647;top:130px;right:0;background-color:#fff;width:44px;height:150px;border-radius:5px;padding-left:12px;display:block">';
     htmlBtn += '<div class="info-general">';
     htmlBtn += '<img class="general-icon" src="'+brokerLogo+'" width="30" height="30"/>';
     htmlBtn += '</div>';
@@ -29,7 +29,7 @@ function sxInitialize(jNode){
     jNode.append(htmlBtn);
 
     var html = "";
-    html += "<div id='sxDiv' style='position:fixed;z-index:99;top:130px;right:30px;background-color:#fff;min-width:400px;width:20%;height:90%;border-radius:5px;display:none'>";
+    html += "<div id='sxDiv' style='position:fixed;z-index:2147483646;top:130px;right:30px;background-color:#fff;min-width:400px;width:20%;height:90%;border-radius:5px;display:none'>";
     //broker info
     html += '<div id="brokerInfoDiv" class="info">';
     html += '<div class="info-general">';
