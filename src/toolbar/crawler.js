@@ -4,6 +4,7 @@
 
 构建列表展示页面，便于选择
 */
+var _sxdebug = false;
 
 function sxInitialize(jNode){
     //监听达人扫码绑定消息
@@ -31,7 +32,7 @@ function sxInitialize(jNode){
     var html = "";
     html += "<div id='sxDiv' style='position:fixed;z-index:2147483646;top:0px;right:0px;background-color:#fff;min-width:400px;width:20%;height:100%;border-radius:5px;display:none;border-left:1px solid silver;'>";
     //broker info
-    html += '<div id="brokerInfoDiv" class="info">';
+    html += '<div id="brokerInfoDiv" class="info" style="background-image:none;">';
     html += '<div class="info-general">';
     html += '<img id="broker-logo" class="general-icon" src="'+brokerLogo+'" height="60px"/>';
     html += '</div>';
@@ -49,7 +50,7 @@ function sxInitialize(jNode){
     jNode.append(html);
 
     //读取面板显示状态：通过postMessage向iframe请求cookie得到
-    console.log("post message to get sxToolbarStatus ");
+    if(_sxdebug)console.log("post message to get sxToolbarStatus ");
     document.getElementById('sxListFrame').contentWindow.postMessage({
       sxCookie:{
         action:"get",
@@ -75,7 +76,7 @@ function sxInitialize(jNode){
                 value:{show:false}
             }
         };
-        console.log("try to post sxToolbar status message to iframe.",data);
+        if(_sxdebug)console.log("try to post sxToolbar status message to iframe.",data);
         document.getElementById('sxListFrame').contentWindow.postMessage(data, '*');
     });
     $("#sxShowBtnDiv").click(function(event){
@@ -91,7 +92,7 @@ function sxInitialize(jNode){
                 value:{show:true}
             }
         };
-        console.log("try to post sxToolbar status message to iframe.",data);
+        if(_sxdebug)console.log("try to post sxToolbar status message to iframe.",data);
         document.getElementById('sxListFrame').contentWindow.postMessage(data, '*');
     });
 }
@@ -105,14 +106,14 @@ function listenPostMessage(){
     eventer(messageEvent,function(e) {
         var key = e.message ? "message" : "data";
         var data = e[key];
-        console.log("got message from child window.",data);
+        if(_sxdebug)console.log("got message from child window.",data);
         if(data&&data.sxBrokerName){//更新达人名称，同时显示 切换按钮。点击切换后将删除sxCookie
             var brokerName = "Hi,"+data.sxBrokerName+(data.sxBrokerRealName&&data.sxBrokerRealName.trim().length>0?("("+data.sxBrokerRealName+")"):"");
             brokerName += "&nbsp;<a href='#' style='font-size:12px;color:silver' id='sxChangeBroker' alt='切换账户'><img width='12' text='切换账户' style='vertical-align:middle; margin: 0 auto; ' src='https://www.biglistoflittlethings.com/ilife-web-wx/images/change.png'/></a>";
             $("#broker-name").html(brokerName);
             $("#sxChangeBroker").click(function(event){
                 //删除sxCookie
-                console.log("try to remove broker info.");
+                if(_sxdebug)console.log("try to remove broker info.");
                 document.getElementById('sxListFrame').contentWindow.postMessage({
                     sxCookie:{
                         action:"set",
@@ -132,12 +133,12 @@ function listenPostMessage(){
         if(data&&data.sxBrokerLogo)//更新达人Logo
             $("#broker-logo").attr("src",data.sxBrokerLogo);
         if(data&&data.sxNavigateTo){//实现frame内页面跳转
-            console.log("try to navigate iframe to new src.",data.sxNavigateTo);
+            if(_sxdebug)console.log("try to navigate iframe to new src.",data.sxNavigateTo);
             $("#sxListFrame").attr("src", data.sxNavigateTo );
         }
         if(data&&data.sxCookie){//实现缓存数据交换
             var sxCookie  = data.sxCookie;//JSON.parse(data.sxCookie);
-            console.log("got message.",sxCookie);
+            if(_sxdebug)console.log("got message.",sxCookie);
             if (sxCookie.action == 'return'){//从iframe cookie中查询获得数据
                 //如果是sxToolbarStatus 则修改显示状态
                 if (sxCookie.key == 'sxToolbarStatus'){
@@ -155,7 +156,7 @@ function listenPostMessage(){
             }
         }
         if(data && data.sxRedirect){
-            console.log("try to redirect",data.sxRedirect);
+            if(_sxdebug)console.log("try to redirect",data.sxRedirect);
             if(data.sxTargetWindow){
                 window.open(data.sxRedirect,data.sxTargetWindow);
             }else{
