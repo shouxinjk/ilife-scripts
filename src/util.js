@@ -5,6 +5,7 @@ var _meta_item=JSON.stringify({
     status:{
         crawl:"ready",
         sync:"pending",
+        load:"pending",
         classify: "pending",
         measure: "pending",
         evaluate: "pending",
