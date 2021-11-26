@@ -28,6 +28,7 @@ var _sxDuration = 800;//milliseconds from data received to commit
 var _spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
 var _spi_query = 'https://data.shouxinjk.net/_db/sea/_api/simple/by-example';
 var _spi_aql = 'https://data.shouxinjk.net/_db/sea/_api/cursor';
+var _spi_api = 'https://data.shouxinjk.net/_db/sea/';//foxx service api root
 var _query=
     {
         collection: "my_stuff", 
@@ -80,21 +81,55 @@ function commitData(data,callback){
         _sxTimer = null;
     }
 
-    //post  data to local storage
-    data._key = hex_md5(data.url);//generate _key manually
-    const mergedData = {//merge meta data
-      ...JSON.parse(_meta_item),
-      ...data
+    //check category mapping and then post data to server
+    var checkCategorySpi = _spi_api+"category/platform_categories/mapping";
+    var checkCategoryData={
+        source:data.source,
+        name:data.category?data.category:""
     };
-    if(_debug)console.log("try to send local storage",mergedData);
-    __postMessage(mergedData); //commit to local storage
+    if(_debug)console.log("check category.[url]"+checkCategorySpi,checkCategoryData);
+    var req = new XMLHttpRequest();
+    req.open('POST', checkCategorySpi, true);//query to check if exists
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.onreadystatechange = function() {
+        if (req.readyState === 4) {
+            if (req.status >= 200 && req.status < 400) {//got result
+                var result = JSON.parse(req.responseText);
+                if(_debug)console.log("\n\ncheck category result.",result);
+                //update meta.category
+                if(result.success && result.data.length>0){
+                    data.meta = {
+                        category:result.data[0].mappingId,
+                        categoryName:result.data[0].mappingName
+                    };
+                    if(_debug)console.log("\n\n data with category info.",data);
+                }
 
-    //(re)start a new timer to commit data
-    _sxTimer = setTimeout(function(){
-        console.log("trigger data commit.");
-        __postData("my_stuff", data,callback);
-    },_sxDuration);
+                //post  data to local storage
+                data._key = hex_md5(data.url);//generate _key manually
+                const mergedData = {//merge meta data
+                  ...JSON.parse(_meta_item),
+                  ...data
+                };
+                if(_debug)console.log("try to send local storage",mergedData);
+                __postMessage(mergedData); //commit to local storage
 
+                //(re)start a new timer to commit data
+                _sxTimer = setTimeout(function(){
+                    console.log("trigger data commit.");
+                    __postData("my_stuff", data,callback);
+                },_sxDuration);
+
+            } else {//query error
+                if(_debug)console.log(JSON.parse(req.responseText));
+            }
+        }
+    };
+    try{
+        req.send(JSON.stringify(checkCategoryData));//put query
+    }catch(e){
+        if(_debug)console.log("Error while checking data if exists."+e);
+    }
 }
 
 //update broker seed
