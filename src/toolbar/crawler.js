@@ -108,7 +108,7 @@ function listenPostMessage(){
         var data = e[key];
         if(_sxdebug)console.log("got message from child window.",data);
         if(data&&data.sxBrokerName){//更新达人名称，同时显示 切换按钮。点击切换后将删除sxCookie
-            var brokerName = "Hi,"+data.sxBrokerName+(data.sxBrokerRealName&&data.sxBrokerRealName.trim().length>0?("("+data.sxBrokerRealName+")"):"");
+            var brokerName = "Hi,"+data.sxBrokerName+(data.sxBrokerOrgnization&&data.sxBrokerOrgnization.trim().length>0?("("+data.sxBrokerOrgnization+")"):"");
             brokerName += "&nbsp;<a href='#' style='font-size:12px;color:silver' id='sxChangeBroker' alt='切换账户'><img width='12' text='切换账户' style='vertical-align:middle; margin: 0 auto; ' src='https://www.biglistoflittlethings.com/ilife-web-wx/images/change.png'/></a>";
             $("#broker-name").html(brokerName);
             $("#sxChangeBroker").click(function(event){
