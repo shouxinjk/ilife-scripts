@@ -4,7 +4,7 @@
 
 构建列表展示页面，便于选择
 */
-var _sxdebug = false;
+var _sxdebug = true;
 
 function sxInitialize(jNode){
     //监听达人扫码绑定消息

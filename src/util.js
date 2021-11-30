@@ -1,5 +1,5 @@
 //_debug 
-var _debug=false;
+var _debug=true;
 
 var _meta_item=JSON.stringify({
     status:{
@@ -102,6 +102,8 @@ function commitData(data,callback){
                         category:result.data[0].mappingId,
                         categoryName:result.data[0].mappingName
                     };
+                    data.status = {classify:"ready"};
+                    data.timestamp = {classify:new Date()};
                     if(_debug)console.log("\n\n data with category info.",data);
                 }
 
@@ -116,8 +118,8 @@ function commitData(data,callback){
 
                 //(re)start a new timer to commit data
                 _sxTimer = setTimeout(function(){
-                    console.log("trigger data commit.");
-                    __postData("my_stuff", data,callback);
+                    console.log("trigger data commit.",mergedData);
+                    __postData("my_stuff", mergedData,callback);
                 },_sxDuration);
 
             } else {//query error
