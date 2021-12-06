@@ -170,8 +170,45 @@ function __postData(collection,data,callback){
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {//got result
                 var result = JSON.parse(req.responseText);
-                if(_debug)console.log("\n\ncheck result.",result,result.count);
-                result.count === 0 ? __create(_spi+collection,data,callback) : __update(_spi+collection+"/"+_key,data,callback);
+                console.log("\n\ncheck result.",result,result.count);
+                //result.count === 0 ? __create(_spi+collection,data,callback) : __update(_spi+collection+"/"+_key,data,callback);
+                if(result.count == 0 ){//创建新的数据
+                    __create(_spi+collection,data,callback);
+                }else{//更新已有数据，注意：对于props等数组需要预先处理，避免导致数据覆盖
+                    if(data.props && data.props.length>0){//仅在有属性列表需要更新的情况下才处理
+                        if(_debug)console.log("\n\ncheck result.",result.result);
+                        var props = result.result[0].props?result.result[0].props:[];
+                        //以下方法比较笨：通过转换[]为{}，逐个赋值
+                        var json = {};
+                        props.forEach((item, index) => {//将新的元素加入或覆盖
+                            console.log("foreach old props.[index]"+index,item,props);
+                            for (var key in item) {
+                               json[key]=item[key];
+                            }
+                        });
+                        if(_debug)console.log("old props.",json);   
+                        //使用新的数值替换或增加
+                        data.props.forEach((item, index) => {//将新的元素加入或覆盖
+                            if(_debug)console.log("foreach new props.[index]"+index,item,props);
+                            for (var key in item) {
+                               json[key]=item[key];
+                            }
+                        });
+                        if(_debug)console.log("new props.",json);  
+                        //转换数组赋值  
+                        props = []; //初始置空
+                        for (var key in json) {
+                            console.log("merge props.",key,json[key]);
+                            var prop = {};
+                            prop[key]=json[key];
+                            props.push(prop);
+
+                        }                                                       
+                        data.props = props;
+                        if(_debug)console.log("commit merged props.",data);
+                    }
+                    __update(_spi+collection+"/"+_key,data,callback);
+                }
             } else {//query error
                 if(_debug)console.log(JSON.parse(req.responseText));
             }
