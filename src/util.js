@@ -1,5 +1,5 @@
 //_debug 
-var _debug=true;
+var _debug=false;
 
 var _meta_item=JSON.stringify({
     status:{
@@ -55,7 +55,7 @@ var _seeds=[];
 //check production mode
 function isProduction(client){
     //here we can control client
-    return _debug;
+    return !_debug;
 }
 
 //create a new seed
@@ -87,7 +87,8 @@ function commitData(data,callback){
         source:data.source,
         name:data.category?data.category:""
     };
-    if(_debug)console.log("check category.[url]"+checkCategorySpi,checkCategoryData);
+    //if(_debug)
+        console.log("\n\ncheck category\n\n.[url]"+checkCategorySpi,checkCategoryData);
     var req = new XMLHttpRequest();
     req.open('POST', checkCategorySpi, true);//query to check if exists
     req.setRequestHeader('Content-Type', 'application/json');
