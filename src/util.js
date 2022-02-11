@@ -1,5 +1,5 @@
 //_debug 
-var _debug=false;
+var _debug=true;
 
 var _meta_item=JSON.stringify({
     status:{
@@ -22,13 +22,14 @@ var _meta_item=JSON.stringify({
 //commitTimer
 var _sxTimer = null;
 var _sxDataReceived = null;//milliseconds while receiving data
-var _sxDuration = 800;//milliseconds from data received to commit
+var _sxDuration = 2000;//milliseconds from data received to commit
 
 //data api
 var _spi = 'https://data.shouxinjk.net/_db/sea/_api/document/';
 var _spi_query = 'https://data.shouxinjk.net/_db/sea/_api/simple/by-example';
 var _spi_aql = 'https://data.shouxinjk.net/_db/sea/_api/cursor';
 var _spi_api = 'https://data.shouxinjk.net/_db/sea/';//foxx service api root
+var _sx_api = 'https://data.shouxinjk.net/ilife/a';//ilife-admin api root
 var _query=
     {
         collection: "my_stuff", 
@@ -82,26 +83,26 @@ function commitData(data,callback){
     }
 
     //check category mapping and then post data to server
-    var checkCategorySpi = _spi_api+"category/platform_categories/mapping";
+    var checkCategorySpi = _sx_api+"/mod/platformCategory/rest/mapping";
     var checkCategoryData={
-        source:data.source,
+        platform:data.source,
         name:data.category?data.category:""
     };
-    //if(_debug)
-        console.log("\n\ncheck category\n\n.[url]"+checkCategorySpi,checkCategoryData);
+    checkCategorySpi = checkCategorySpi+"?platform="+checkCategoryData.platform+"&name="+checkCategoryData.name;
+    if(_debug)console.log("\n\ncheck category\n\n.[url]"+checkCategorySpi,checkCategoryData);
     var req = new XMLHttpRequest();
-    req.open('POST', checkCategorySpi, true);//query to check if exists
-    req.setRequestHeader('Content-Type', 'application/json');
+    req.open('GET', checkCategorySpi, true);//query to check if exists
+    //req.setRequestHeader('Content-Type', 'application/json');
     req.onreadystatechange = function() {
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {//got result
                 var result = JSON.parse(req.responseText);
                 if(_debug)console.log("\n\ncheck category result.",result);
                 //update meta.category
-                if(result.success && result.data.length>0){
+                if(result.success && result.data && result.data.length>0 && result.data[0].category ){
                     data.meta = {
-                        category:result.data[0].mappingId,
-                        categoryName:result.data[0].mappingName
+                        category:result.data[0].category.id,
+                        categoryName:result.data[0].category.name
                     };
                     data.status = {classify:"ready"};
                     data.timestamp = {classify:new Date()};
@@ -114,7 +115,8 @@ function commitData(data,callback){
                   ...JSON.parse(_meta_item),
                   ...data
                 };
-                if(_debug)console.log("try to send local storage",mergedData);
+                if(_debug)
+                    console.log("try to send local storage",mergedData);
                 __postMessage(mergedData); //commit to local storage
 
                 //(re)start a new timer to commit data
@@ -129,7 +131,8 @@ function commitData(data,callback){
         }
     };
     try{
-        req.send(JSON.stringify(checkCategoryData));//put query
+        //req.send(JSON.stringify(checkCategoryData));//put query
+        req.send();//get 
     }catch(e){
         if(_debug)console.log("Error while checking data if exists."+e);
     }
@@ -255,6 +258,10 @@ function __create(url,data,callback){
             }
         }
     };
+    req.onerror = function(jqXHR, textStatus, errorThrown){
+        //do nothing
+        console.log("create document error.",jqXHR,textStatus,errorThrown);
+    };
     data._key = hex_md5(data.url);
     //自动添加meta数据
     const mergedData = {
@@ -306,6 +313,10 @@ function __update(url,data,callback){
             }
         }
     };
+    req.onerror = function(jqXHR, textStatus, errorThrown){
+        //do nothing
+        console.log("update document error.",jqXHR,textStatus,errorThrown);
+    };    
     try{
         delNullProperty(data)//删除其中空值，仅仅更新有数据的部分，避免数据覆盖
         //自动添加meta数据
@@ -438,4 +449,32 @@ function delNullProperty(obj){
             }
         }
     }
+}
+
+//从cookie中获取缓存的值，采用json字符串存储
+function getSxCookie(key){
+    console.log("got cookie.",document.cookie);
+    var cookieArray = document.cookie.split(';');
+    for(var i=0;i<cookieArray.length;i++){
+        var name = key+"=";
+        if(cookieArray[i].indexOf(name)==0){
+            return JSON.parse(cookieArray[i].substring(name.length, cookieArray[i].length));
+        }
+    }
+    return {};
+}
+
+//向cookie中写入缓存值，采用json字符串存储
+function addSxCookie(key,json){
+    console.log("got cookie for adding.",document.cookie);
+    var cookieArray = document.cookie.split(';');
+    var cookieStr = "";
+    for(var i=0;i<cookieArray.length;i++){
+        var name = key+"=";
+        if(cookieArray[i].indexOf(name)<0){
+            cookieStr += cookieArray[i]+";"
+        }
+    }
+    cookieStr+=key+"="+JSON.stringify(json);
+    document.cookie = cookieStr;
 }
