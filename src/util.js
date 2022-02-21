@@ -1,5 +1,5 @@
 //_debug 
-var _debug=true;
+var _debug=false;
 
 var _meta_item=JSON.stringify({
     status:{
