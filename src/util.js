@@ -65,23 +65,28 @@ function commitUrl(data,callback){
 }
 
 //create a new item
-/**
-function commitData(data,callback){
-    __postData("my_stuff", data,callback);
-}
-//**/
 function commitData(data,callback){
     //set initially received time 
     if(!_sxDataReceived){
         _sxDataReceived = new Date().getTime();
-    }
-
+    }    
     //check duration and clear timer
     if(_sxTimer && new Date().getTime()-_sxDataReceived < _sxDuration){
-        clearTimeout(_sxTimer);
+        if(_debug)console.log("try to clear timer for too frequent data commit.");
+        clearTimeout(_sxTimer);   
         _sxTimer = null;
     }
+    //(re)start a new timer to commit data
+    _sxTimer = setTimeout(function(){
+        if(_debug)console.log("commit data timer start.",data);
+        __commitData(data,callback);
+    },_sxDuration);    
+    //设置数据接收时间
+    _sxDataReceived = new Date().getTime();
 
+}
+
+function __commitData(data,callback){
     //check category mapping and then post data to server
     var checkCategorySpi = _sx_api+"/mod/platformCategory/rest/mapping";
     var checkCategoryData={
@@ -115,19 +120,18 @@ function commitData(data,callback){
                   ...JSON.parse(_meta_item),
                   ...data
                 };
-                if(_debug)
-                    console.log("try to send local storage",mergedData);
+                if(_debug)console.log("try to send local storage",JSON.stringify(mergedData).length,mergedData);
                 __postMessage(mergedData); //commit to local storage
 
-                //(re)start a new timer to commit data
-                _sxTimer = setTimeout(function(){
-                    console.log("trigger data commit.",mergedData);
-                    __postData("my_stuff", mergedData,callback);
-                },_sxDuration);
+                //if(_debug)
+                console.log("trigger data commit.",mergedData);
+                __postData("my_stuff", mergedData,callback);
 
             } else {//query error
                 if(_debug)console.log(JSON.parse(req.responseText));
             }
+        }else{
+            console.log("check category mapping error.");
         }
     };
     try{
@@ -174,7 +178,7 @@ function __postData(collection,data,callback){
         if (req.readyState === 4) {
             if (req.status >= 200 && req.status < 400) {//got result
                 var result = JSON.parse(req.responseText);
-                console.log("\n\ncheck result.",result,result.count);
+                if(_debug)console.log("\n\ncheck result.",result,result.count);
                 //result.count === 0 ? __create(_spi+collection,data,callback) : __update(_spi+collection+"/"+_key,data,callback);
                 if(result.count == 0 ){//创建新的数据
                     __create(_spi+collection,data,callback);
@@ -185,7 +189,7 @@ function __postData(collection,data,callback){
                         //以下方法比较笨：通过转换[]为{}，逐个赋值
                         var json = {};
                         props.forEach((item, index) => {//将新的元素加入或覆盖
-                            console.log("foreach old props.[index]"+index,item,props);
+                            if(_debug)console.log("foreach old props.[index]"+index,item,props);
                             for (var key in item) {
                                json[key]=item[key];
                             }
@@ -202,7 +206,7 @@ function __postData(collection,data,callback){
                         //转换数组赋值  
                         props = []; //初始置空
                         for (var key in json) {
-                            console.log("merge props.",key,json[key]);
+                            if(_debug)console.log("merge props.",key,json[key]);
                             var prop = {};
                             prop[key]=json[key];
                             props.push(prop);
@@ -346,8 +350,14 @@ function _querySeeds(query,callback){
 //将护具提交给本地。约定向指定frame发消息
 function __postMessage(item){
     if(_debug)console.log("try to post message to local cookie. ",item);
+    if(item.logo && item.logo.trim().length>5){
+        //已经设置有item.logo，直接使用
+    }else{//否则设置item.logo
+        item.logo = item.images[0];
+        //delete item.images;//重要：由于使用cookie做本地缓存，过长的url导致超出4096限制，无法存储
+    }
     if(document.getElementById('sxListFrame')){
-        console.log("post message to  local cookie. ",item);
+        console.log("post message to  local cookie. ",JSON.stringify(item).length,item);
         document.getElementById('sxListFrame').contentWindow.postMessage({
           sxCookie:{
             action:"save",
