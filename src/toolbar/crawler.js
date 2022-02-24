@@ -16,7 +16,7 @@ function sxInitialize(jNode){
     //设置操作按钮：显示或隐藏
     var htmlBtn = "";
     htmlBtn += '<div id="sxHideBtnDiv" class="info" style="position:fixed;z-index:2147483647;top:0px;right:0px;background-color:#fff;width:50px;height:20px;border-radius:5px;display:none">';
-    htmlBtn += '<div style="line-height:22px;color:grey;">隐藏</div>';
+    htmlBtn += '<div style="line-height:22px;color:grey;background-color:#fff">隐藏</div>';
     htmlBtn += '</div>';
     //show btn
     htmlBtn += '<div id="sxShowBtnDiv" class="info" style="position:fixed;z-index:2147483647;top:0px;right:0;background-color:#fff;width:44px;height:150px;border-radius:5px;padding-left:12px;display:block">';
@@ -34,7 +34,7 @@ function sxInitialize(jNode){
     //broker info
     html += '<div id="brokerInfoDiv" class="info" style="background-image:none;">';
     html += '<div class="info-general">';
-    html += '<img id="broker-logo" class="general-icon" src="'+brokerLogo+'" height="60px"/>';
+    html += '<img id="broker-logo" class="general-icon" src="'+brokerLogo+'" height="60px" style="margin:10px auto;"/>';
     html += '</div>';
     html += '<div class="info-detail" style="text-align:left">';
     html += '<div id="broker-name" class="info-text info-blank" style="color:#000;font-weight:bold;font-size:14px;">'+brokerName+'</div>';
@@ -109,7 +109,8 @@ function listenPostMessage(){
         if(_sxdebug)console.log("got message from child window.",data);
         if(data&&data.sxBrokerName){//更新达人名称，同时显示 切换按钮。点击切换后将删除sxCookie
             var brokerName = "Hi,"+data.sxBrokerName+(data.sxBrokerOrgnization&&data.sxBrokerOrgnization.trim().length>0?("("+data.sxBrokerOrgnization+")"):"");
-            brokerName += "&nbsp;<a href='#' style='font-size:12px;color:silver' id='sxChangeBroker' alt='切换账户'><img width='12' text='切换账户' style='vertical-align:middle; margin: 0 auto; ' src='https://www.biglistoflittlethings.com/ilife-web-wx/images/change.png'/></a>";
+            //brokerName += "&nbsp;<a href='#' style='font-size:12px;color:silver' id='sxChangeBroker' alt='切换账户'><img width='12' text='切换账户' style='vertical-align:middle; margin: 0 auto; ' src='https://www.biglistoflittlethings.com/ilife-web-wx/images/change.png'/></a>";
+            brokerName += "&nbsp;<a href='#' style='font-size:12px;color:silver;text-decoration:none' id='sxChangeBroker' alt='切换账户'><span style='width:12px;height:12px;'>⇌</span></a>";
             $("#broker-name").html(brokerName);
             $("#sxChangeBroker").click(function(event){
                 //删除sxCookie
