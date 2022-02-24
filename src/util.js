@@ -93,7 +93,7 @@ function __commitData(data,callback){
         platform:data.source,
         name:data.category?data.category:""
     };
-    checkCategorySpi = checkCategorySpi+"?platform="+checkCategoryData.platform+"&name="+checkCategoryData.name;
+    checkCategorySpi = checkCategorySpi+"?platform="+checkCategoryData.platform+"&name="+encodeURIComponent(checkCategoryData.name);
     if(_debug)console.log("\n\ncheck category\n\n.[url]"+checkCategorySpi,checkCategoryData);
     var req = new XMLHttpRequest();
     req.open('GET', checkCategorySpi, true);//query to check if exists
