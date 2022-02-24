@@ -24,7 +24,7 @@ function sxInitialize(jNode){
     htmlBtn += '<img class="general-icon" src="'+brokerLogo+'" width="30" height="30"/>';
     htmlBtn += '</div>';
     htmlBtn += '<div class="info-detail" style="text-align:left">';
-    htmlBtn += '<div class="info-text info-blank" style="color:#000;font-size:14px;height:100px">查<br/>看<br/>详<br/>情</div>';
+    htmlBtn += '<div class="info-text info-blank" style="color:#000;font-size:14px;height:100px;background-color:#fff">查<br/>看<br/>详<br/>情</div>';
     htmlBtn += '</div>';
 
     jNode.append(htmlBtn);
