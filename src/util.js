@@ -86,6 +86,14 @@ function commitData(data,callback){
 
 }
 
+//仅对已经存在的数据进行补充。如果不存在则直接报错，不予处理
+function patchData(data,callback){
+    data._key = hex_md5(data.url);//generate _key manually
+    //if(_debug)
+        console.log("try to patch data."+data._key,data);
+     __update(_spi+"my_stuff/"+data._key,data,callback);
+}
+
 function __commitData(data,callback){
     //check category mapping and then post data to server
     var checkCategorySpi = _sx_api+"/mod/platformCategory/rest/mapping";
@@ -109,8 +117,8 @@ function __commitData(data,callback){
                         category:result.data[0].category.id,
                         categoryName:result.data[0].category.name
                     };
-                    data.status = {classify:"ready"};
-                    data.timestamp = {classify:new Date()};
+                    data.status.classify = "ready";
+                    data.timestamp.classify = new Date();
                     if(_debug)console.log("\n\n data with category info.",data);
                 }
 
@@ -134,6 +142,20 @@ function __commitData(data,callback){
             console.log("check category mapping error.");
         }
     };
+    req.onerror = function() {//在查询类目出错时，也需要将数据回传到本地，并发起提交
+        //post  data to local storage
+        data._key = hex_md5(data.url);//generate _key manually
+        const mergedData = {//merge meta data
+          ...JSON.parse(_meta_item),
+          ...data
+        };
+        if(_debug)console.log("try to send local storage",JSON.stringify(mergedData).length,mergedData);
+        __postMessage(mergedData); //commit to local storage
+
+        //if(_debug)
+        console.log("trigger data commit.",mergedData);
+        __postData("my_stuff", mergedData,callback);
+    };    
     try{
         //req.send(JSON.stringify(checkCategoryData));//put query
         req.send();//get 
