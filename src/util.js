@@ -117,7 +117,9 @@ function __commitData(data,callback){
                         category:result.data[0].category.id,
                         categoryName:result.data[0].category.name
                     };
+                    if(!data.status)data.status={};
                     data.status.classify = "ready";
+                    if(!data.timestamp)data.timestamp={};
                     data.timestamp.classify = new Date();
                     if(_debug)console.log("\n\n data with category info.",data);
                 }
