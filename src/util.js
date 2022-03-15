@@ -117,6 +117,7 @@ function __commitData(data,callback){
                         category:result.data[0].category.id,
                         categoryName:result.data[0].category.name
                     };
+                    console.log("check item status.",data);
                     if(!data.status)data.status={};
                     data.status.classify = "ready";
                     if(!data.timestamp)data.timestamp={};
@@ -127,9 +128,11 @@ function __commitData(data,callback){
                 //post  data to local storage
                 data._key = hex_md5(data.url);//generate _key manually
                 const mergedData = {//merge meta data
-                  ...JSON.parse(_meta_item),
-                  ...data
+                    ...data,//注意：合并时是覆盖，需要将状态放在后面
+                    ...JSON.parse(_meta_item)
                 };
+                if(data.meta && data.meta.category)mergedData.status.classify="ready";
+                if(data.timestamp && data.timestamp.classify)mergedData.timestamp.classify=data.timestamp.classify;
                 if(_debug)console.log("try to send local storage",JSON.stringify(mergedData).length,mergedData);
                 __postMessage(mergedData); //commit to local storage
 
@@ -148,9 +151,11 @@ function __commitData(data,callback){
         //post  data to local storage
         data._key = hex_md5(data.url);//generate _key manually
         const mergedData = {//merge meta data
-          ...JSON.parse(_meta_item),
-          ...data
+            ...data,
+          ...JSON.parse(_meta_item)
         };
+        if(data.meta && data.meta.category)mergedData.status.classify="ready";
+        if(data.timestamp && data.timestamp.classify)mergedData.timestamp.classify=data.timestamp.classify;
         if(_debug)console.log("try to send local storage",JSON.stringify(mergedData).length,mergedData);
         __postMessage(mergedData); //commit to local storage
 
@@ -293,9 +298,11 @@ function __create(url,data,callback){
     data._key = hex_md5(data.url);
     //自动添加meta数据
     const mergedData = {
-      ...JSON.parse(_meta_item),
-      ...data
+        ...data,
+        ...JSON.parse(_meta_item)
     };
+    if(data.meta && data.meta.category)mergedData.status.classify="ready";
+    if(data.timestamp && data.timestamp.classify)mergedData.timestamp.classify=data.timestamp.classify;    
     //提交到本地：由于网络存在中断情况，先提交到本地，在控制面板中显示
     //if(_debug)console.log("try to send local storage",mergedData);
     //__postMessage(mergedData);     
@@ -349,9 +356,11 @@ function __update(url,data,callback){
         delNullProperty(data)//删除其中空值，仅仅更新有数据的部分，避免数据覆盖
         //自动添加meta数据
         const mergedData = {
-          ...JSON.parse(_meta_item),
-          ...data
+            ...data,
+          ...JSON.parse(_meta_item)
         };
+        if(data.meta && data.meta.category)mergedData.status.classify="ready";
+        if(data.timestamp && data.timestamp.classify)mergedData.timestamp.classify=data.timestamp.classify;        
         if(_debug)console.log("try to send data.",mergedData);        
         req.send(JSON.stringify(mergedData));//post data       
         //提交到本地：由于网络存在中断情况，此处先提交到本地，在控制面板中显示
