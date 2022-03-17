@@ -212,7 +212,7 @@ function __postData(collection,data,callback){
                 if(result.count == 0 ){//创建新的数据
                     __create(_spi+collection,data,callback);
                 }else{//更新已有数据，注意：对于props等数组需要预先处理，避免导致数据覆盖
-                    if(data.props && data.props.length>0){//仅在有属性列表需要更新的情况下才处理
+                    if(data.props && Array.isArray(data.props)){//仅在有属性列表需要更新的情况下才处理：兼容props为数组的情况
                         if(_debug)console.log("\n\ncheck result.",result.result);
                         var props = result.result[0].props?result.result[0].props:[];
                         //以下方法比较笨：通过转换[]为{}，逐个赋值
