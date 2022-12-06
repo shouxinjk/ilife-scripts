@@ -128,9 +128,10 @@ function __commitData(data,callback){
                 //post  data to local storage
                 data._key = hex_md5(data.url);//generate _key manually
                 const mergedData = {//merge meta data
-                    ...JSON.parse(_meta_item),                    
                     ...data,//注意：合并时是覆盖，需要将状态放在后面
+                    ...JSON.parse(_meta_item),                    
                 };
+                if(data.status.sync)mergedData.status.sync=data.status.sync;
                 if(data.meta && data.meta.category)mergedData.status.classify="ready";
                 if(data.timestamp && data.timestamp.classify)mergedData.timestamp.classify=data.timestamp.classify;
                 if(_debug)console.log("try to send local storage",JSON.stringify(mergedData).length,mergedData);
