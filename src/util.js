@@ -385,7 +385,7 @@ function __postMessage(item){
     if(_debug)console.log("try to post message to local cookie. ",item);
     if(item.logo && item.logo.trim().length>5){
         //已经设置有item.logo，直接使用
-    }else{//否则设置item.logo
+    }else if(item.images && item.images.length>0){//否则设置iteimagem.logo
         item.logo = item.images[0];
         //delete item.images;//重要：由于使用cookie做本地缓存，过长的url导致超出4096限制，无法存储
     }
