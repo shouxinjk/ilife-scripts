@@ -131,7 +131,7 @@ function __commitData(data,callback){
                     ...data,//注意：合并时是覆盖，需要将状态放在后面
                     ...JSON.parse(_meta_item),                    
                 };
-                if(data.status.sync)mergedData.status.sync=data.status.sync;
+                if(data.status&&data.status.sync)mergedData.status.sync=data.status.sync;
                 if(data.meta && data.meta.category)mergedData.status.classify="ready";
                 if(data.timestamp && data.timestamp.classify)mergedData.timestamp.classify=data.timestamp.classify;
                 if(_debug)console.log("try to send local storage",JSON.stringify(mergedData).length,mergedData);
@@ -155,13 +155,14 @@ function __commitData(data,callback){
             ...data,
           ...JSON.parse(_meta_item)
         };
+        if(data.status&&data.status.sync)mergedData.status.sync=data.status.sync;
         if(data.meta && data.meta.category)mergedData.status.classify="ready";
         if(data.timestamp && data.timestamp.classify)mergedData.timestamp.classify=data.timestamp.classify;
         if(_debug)console.log("try to send local storage",JSON.stringify(mergedData).length,mergedData);
         __postMessage(mergedData); //commit to local storage
 
-        //if(_debug)
-        console.log("trigger data commit.",mergedData);
+        if(_debug)
+            console.log("trigger data commit.",mergedData);
         __postData("my_stuff", mergedData,callback);
     };    
     try{
@@ -302,13 +303,14 @@ function __create(url,data,callback){
         ...data,
         ...JSON.parse(_meta_item)
     };
+    if(data.status&&data.status.sync)mergedData.status.sync=data.status.sync;
     if(data.meta && data.meta.category)mergedData.status.classify="ready";
     if(data.timestamp && data.timestamp.classify)mergedData.timestamp.classify=data.timestamp.classify;    
     //提交到本地：由于网络存在中断情况，先提交到本地，在控制面板中显示
     //if(_debug)console.log("try to send local storage",mergedData);
     //__postMessage(mergedData);     
     //提交到服务器
-    console.log("try to send data.",mergedData);
+    console.log("try to send create data.",mergedData);
     try{
         req.send(JSON.stringify(mergedData));//post data       
     }catch(e){
@@ -360,9 +362,11 @@ function __update(url,data,callback){
             ...data,
           ...JSON.parse(_meta_item)
         };
+        if(data.status&&data.status.sync)mergedData.status.sync=data.status.sync;
         if(data.meta && data.meta.category)mergedData.status.classify="ready";
         if(data.timestamp && data.timestamp.classify)mergedData.timestamp.classify=data.timestamp.classify;        
-        if(_debug)console.log("try to send data.",mergedData);        
+        //if(_debug)
+            console.log("try to send update data.",mergedData);        
         req.send(JSON.stringify(mergedData));//post data       
         //提交到本地：由于网络存在中断情况，此处先提交到本地，在控制面板中显示
         //if(_debug)console.log("try to send local storage",mergedData);
