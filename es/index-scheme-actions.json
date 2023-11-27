@@ -1,0 +1,363 @@
+{
+    "mappings": {
+        "doc": {
+            "dynamic": false,
+            "properties": {
+                "userId": {
+                    "type": "keyword",
+                    "copy_to": [
+                        "full_text"
+                    ]
+                },
+                "itemId": {
+                    "type": "keyword",
+                    "copy_to": [
+                        "full_text"
+                    ]
+                },
+                "fromUser": {
+                    "type": "keyword"
+                },
+                "fromBroker": {
+                    "type": "keyword"
+                },
+                "client": {
+                    "type": "keyword"
+                },
+                "type": {
+                    "type": "keyword"
+                },
+                "action": {
+                    "type": "text",
+                    "copy_to": [
+                        "full_tags",
+                        "full_text"
+                    ]
+                },
+                "item": {
+                    "type": "nested",
+                    "properties": {
+                        "source": {
+                            "type": "keyword",
+                            "copy_to": [
+                                "full_text"
+                            ]
+                        },
+                        "type": {
+                            "type": "keyword",
+                            "copy_to": [
+                                "full_text"
+                            ]
+                        },
+                        "url": {
+                            "type": "keyword"
+                        },
+                        "title": {
+                            "type": "text",
+                            "copy_to": [
+                                "full_text"
+                            ],
+                            "analyzer": "ik_smart"
+                        },
+                        "summary": {
+                            "type": "text",
+                            "copy_to": [
+                                "full_text"
+                            ],
+                            "analyzer": "ik_smart"
+                        },
+                        "catIds": {
+                            "type": "keyword"
+                        },
+                        "category": {
+                            "type": "keyword",
+                            "copy_to": [
+                                "full_text"
+                            ]
+                        },
+                        "tags": {
+                            "type": "keyword",
+                            "copy_to": [
+                                "full_tags",
+                                "full_text"
+                            ]
+                        },
+                        "address": {
+                            "type": "text",
+                            "copy_to": [
+                                "full_text"
+                            ],
+                            "analyzer": "ik_smart"
+                        },
+                        "logo": {
+                            "type": "text"
+                        },
+                        "images": {
+                            "type": "text"
+                        },
+                        "producer": {
+                            "type": "nested",
+                            "properties": {
+                                "country": {
+                                    "type": "keyword"
+                                },
+                                "language": {
+                                    "type": "keyword"
+                                },
+                                "name": {
+                                    "type": "text",
+                                    "copy_to": [
+                                        "full_text"
+                                    ]
+                                }
+                            }
+                        },
+                        "distributor": {
+                            "type": "nested",
+                            "properties": {
+                                "country": {
+                                    "type": "keyword"
+                                },
+                                "language": {
+                                    "type": "keyword"
+                                },
+                                "name": {
+                                    "type": "text",
+                                    "copy_to": [
+                                        "full_text"
+                                    ]
+                                }
+                            }
+                        },
+                        "seller": {
+                            "type": "nested",
+                            "properties": {
+                                "country": {
+                                    "type": "keyword"
+                                },
+                                "language": {
+                                    "type": "keyword"
+                                },
+                                "name": {
+                                    "type": "text",
+                                    "copy_to": [
+                                        "full_text"
+                                    ]
+                                }
+                            }
+                        },
+                        "location": {
+                            "type": "geo_point"
+                        },
+                        "props": {
+                            "type": "nested"
+                        },
+                        "link": {
+                            "type": "nested",
+                            "properties": {
+                                "coupon": {
+                                    "type": "text"
+                                },
+                                "cps": {
+                                    "type": "nested",
+                                    "dynamic": true
+                                },
+                                "miniprog": {
+                                    "type": "text"
+                                },
+                                "qrcode": {
+                                    "type": "text"
+                                },
+                                "token": {
+                                    "type": "text"
+                                },
+                                "wap": {
+                                    "type": "text"
+                                },
+                                "wap2": {
+                                    "type": "text"
+                                },
+                                "web": {
+                                    "type": "text"
+                                },
+                                "web2": {
+                                    "type": "text"
+                                }
+                            }
+                        },
+                        "rank": {
+                            "type": "nested",
+                            "properties": {
+                                "base": {
+                                    "type": "half_float"
+                                },
+                                "count": {
+                                    "type": "long"
+                                },
+                                "score": {
+                                    "type": "half_float"
+                                }
+                            }
+                        },
+                        "price": {
+                            "type": "nested",
+                            "properties": {
+                                "currency": {
+                                    "type": "keyword"
+                                },
+                                "bid": {
+                                    "type": "double"
+                                },
+                                "sale": {
+                                    "type": "double"
+                                },
+                                "coupon": {
+                                    "type": "double"
+                                },
+                                "cost": {
+                                    "type": "double"
+                                }
+                            }
+                        },
+                        "tagging": {
+                            "type": "keyword",
+                            "copy_to": [
+                                "full_tags",
+                                "full_text"
+                            ]
+                        },
+                        "tagging2": {
+                            "type": "nested",
+                            "properties": {
+                                "satisify": {
+                                    "type": "keyword",
+                                    "copy_to": [
+                                        "full_tags",
+                                        "full_text"
+                                    ]
+                                },
+                                "context": {
+                                    "type": "keyword",
+                                    "copy_to": [
+                                        "full_tags",
+                                        "full_text"
+                                    ]
+                                },
+                                "category": {
+                                    "type": "keyword",
+                                    "copy_to": [
+                                        "full_tags",
+                                        "full_text"
+                                    ]
+                                },
+                                "feature": {
+                                    "type": "keyword",
+                                    "copy_to": [
+                                        "full_tags",
+                                        "full_text"
+                                    ]
+                                }
+                            }
+                        },
+                        "advices": {
+                            "type": "nested",
+                            "dynamic": true
+                        },
+                        "meta": {
+                            "type": "nested",
+                            "dynamic": true,
+                            "properties": {
+                                "category": {
+                                    "type": "keyword"
+                                }
+                            }
+                        },
+                        "profit": {
+                            "type": "nested",
+                            "properties": {
+                                "type": {
+                                    "type": "keyword"
+                                },
+                                "amount": {
+                                    "type": "double"
+                                },
+                                "rate": {
+                                    "type": "double"
+                                },
+                                "credit": {
+                                    "type": "long"
+                                },
+                                "order": {
+                                    "type": "double"
+                                },
+                                "team": {
+                                    "type": "double"
+                                }
+                            }
+                        },
+                        "measure": {
+                            "type": "nested",
+                            "properties": {
+                                "score": {
+                                    "type": "half_float"
+                                },
+                                "rank": {
+                                    "type": "byte"
+                                }
+                            }
+                        },
+                        "performance": {
+                            "type": "nested",
+                            "properties": {
+                                "a": {
+                                    "type": "half_float"
+                                },
+                                "b": {
+                                    "type": "half_float"
+                                },
+                                "c": {
+                                    "type": "half_float"
+                                },
+                                "d": {
+                                    "type": "half_float"
+                                },
+                                "e": {
+                                    "type": "half_float"
+                                }
+                            }
+                        },
+                        "cost": {
+                            "type": "nested",
+                            "properties": {
+                                "x": {
+                                    "type": "half_float"
+                                },
+                                "y": {
+                                    "type": "half_float"
+                                },
+                                "z": {
+                                    "type": "half_float"
+                                }
+                            }
+                        }
+                    }
+                },
+                "user": {
+                    "type": "nested",
+                    "dynamic": true
+                },
+                "@timestamp": {
+                    "type": "date"
+                },
+                "full_tags": {
+                    "type": "text",
+                    "analyzer": "ik_smart"
+                },
+                "full_text": {
+                    "type": "text",
+                    "analyzer": "ik_smart"
+                }
+            }
+        }
+    }
+}
